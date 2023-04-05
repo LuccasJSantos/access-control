@@ -1,10 +1,10 @@
 * Config inicial
 
-** TODO [#A] Preparar sistema de roteamento
-DEADLINE: <2023-04-01 Sat>
-** TODO [#B] Configurar redux
+** DONE Preparar sistema de roteamento
+CLOSED: [2023-04-05 Wed 02:26] DEADLINE: <2023-04-02 Sat>
+** TODO Configurar redux
 DEADLINE: <2023-04-02 Sun>
-** TODO [#C] Preparar temas
+** TODO Preparar temas
 DEADLINE: <2023-04-02 Sun>
 
 * Login
@@ -12,6 +12,7 @@ DEADLINE: <2023-04-02 Sun>
 ** TODO Criar tela de login
 SCHEDULED: <2023-04-03 Mon> DEADLINE: <2023-04-04 Mon>
 ** TODO Configurar sistema de save de senhas
+SCHEDULED: <2023-04-05 Wed> DEADLINE: <2023-04-05 Wed>
 
 * Link WiFi
 
@@ -25,7 +26,6 @@ SCHEDULED: <2023-04-03 Mon> DEADLINE: <2023-04-04 Mon>
    1. [ ] Busca de usuários no servidor
    2. [ ] Lista de usuários
    3. [ ] Botão para criacão
-
 ** TODO Criacão
    1. [ ] Solicitar que o servidor inicie rotina de criacão
    2. [ ] Iniciar passo a passo de criacão
