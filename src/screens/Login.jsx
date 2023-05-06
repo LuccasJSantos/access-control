@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react'
 import {
   Image,
   ImageBackground,
@@ -6,15 +6,25 @@ import {
   StatusBar,
   Text,
   View,
-} from "react-native"
-import { Button, FormControl, Input } from "native-base"
-import bg from "../../assets/login-bg.png"
-import logo from "../../assets/fatec-logo.png"
+} from 'react-native'
+import { Button, FormControl, Input } from 'native-base'
+import bg from '../../assets/login-bg.png'
+import logo from '../../assets/fatec-logo.png'
 
-const Login = () => {
-  const [data, setData] = useState({ username, password })
+function Login(props) {
+  const [data, setData] = useState({ username: '', password: '' })
+  const [errors, setErrors] = useState({ username: '', password: '' })
 
-  function onLogin() {}
+  function onLogin() {
+    setErrors({
+      username: data.username ? '' : 'Preencha o usuário',
+      password: data.password ? '' : 'Preencha a senha',
+    })
+
+    if (data.username && data.password) {
+      props.navigation.navigate('Home')
+    }
+  }
 
   return (
     <ImageBackground className="flex-1" source={bg} resizeMode="cover">
@@ -36,48 +46,34 @@ const Login = () => {
         <View className="flex-row">
           <View className="flex-1">
             <Text className="font-semibold text-white text-2xl">Login</Text>
-            <FormControl isRequired isInvalid={"name" in errors}>
-              <FormControl.Label
-                _text={{
-                  bold: true,
-                }}
-              >
-                Name
-              </FormControl.Label>
+
+            <FormControl isRequired isInvalid={errors.username}>
               <Input
                 placeholder="Usuário"
+                variant="underlined"
                 onChangeText={(value) => setData({ ...data, username: value })}
                 className="text-white"
               />
-              {"name" in errors ? (
+              {errors.username && (
                 <FormControl.ErrorMessage>
-                  Preencha o campo usuário
+                  {errors.username}
                 </FormControl.ErrorMessage>
-              ) : (
-                <FormControl.HelperText>
-                  Preencha o campo usuário
-                </FormControl.HelperText>
               )}
             </FormControl>
-            <Button onPress={onSubmit} mt="5" colorScheme="cyan">
-              Submit
-            </Button>
 
-            <View className="mt-4 space-y-2">
+            <FormControl isRequired isInvalid={errors.password}>
               <Input
-                variant="underlined"
-                size="lg"
-                placeholder="Usuário"
-                className="text-white"
-              />
-              <Input
-                variant="underlined"
-                type="password"
-                size="lg"
                 placeholder="Senha"
+                variant="underlined"
+                onChangeText={(value) => setData({ ...data, password: value })}
                 className="text-white"
               />
-            </View>
+              {errors.password && (
+                <FormControl.ErrorMessage>
+                  {errors.password}
+                </FormControl.ErrorMessage>
+              )}
+            </FormControl>
 
             <Button className="mt-6 bg-accent" onPress={onLogin}>
               Login
