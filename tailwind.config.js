@@ -6,6 +6,7 @@ module.exports = {
     extend: {
       colors: {
         accent: "#E50014",
+        'bg-default': 'bg-gradient-to-b from-10% via-[#fff] to-[#f4f6fa]'
       },
     },
   },

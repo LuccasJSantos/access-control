@@ -1,9 +1,14 @@
-import { SafeAreaView, StatusBar } from "react-native"
-import { NativeBaseProvider } from "native-base"
-import { NavigationContainer } from "@react-navigation/native"
-import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import 'intl'
+import 'intl/locale-data/jsonp/en'
 
-import Login from "./src/screens/Login"
+import { StatusBar } from 'react-native'
+import { NativeBaseProvider } from 'native-base'
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+
+import Login from './src/screens/Login'
+import Home from './src/screens/Home'
+
 const Stack = createNativeStackNavigator()
 
 export default function App() {
@@ -15,6 +20,11 @@ export default function App() {
           <Stack.Screen
             name="Login"
             component={Login}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Home"
+            component={Home}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
