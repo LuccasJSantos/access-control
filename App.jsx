@@ -8,6 +8,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 import Login from './src/screens/Login'
 import Home from './src/screens/Home'
+import ConnectionSettings from './src/screens/ConnectionSettings'
 
 const Stack = createNativeStackNavigator()
 
@@ -18,13 +19,18 @@ export default function App() {
         <StatusBar hidden height="auto" />
         <Stack.Navigator>
           <Stack.Screen
-            name="Login"
+            name="login"
             component={Login}
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="Home"
+            name="home"
             component={Home}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="connection-settings"
+            component={ConnectionSettings}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

@@ -10,8 +10,11 @@ import {
 import { Button, FormControl, Input } from 'native-base'
 import bg from '../../assets/login-bg.png'
 import logo from '../../assets/fatec-logo.png'
+import { useNavigation } from '@react-navigation/native'
 
-function Login(props) {
+function Login() {
+  const navigation = useNavigation()
+
   const [data, setData] = useState({ username: '', password: '' })
   const [errors, setErrors] = useState({ username: '', password: '' })
 
@@ -22,7 +25,7 @@ function Login(props) {
     })
 
     if (data.username && data.password) {
-      props.navigation.navigate('Home')
+      navigation.reset({ index: 0, routes: [{ name: 'home' }] })
     }
   }
 

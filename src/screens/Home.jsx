@@ -40,109 +40,108 @@ function Home() {
 
           <Avatar className="bg-accent">LS</Avatar>
         </View>
+        <Section
+          title="Conexão"
+          link={{ title: 'Configurar', screen: 'connection-settings' }}
+          className="mt-5"
+        >
+          <View className="flex-row items-center gap-1">
+            <Text className="text-red-500 text-xs">Offline</Text>
+            <Feather name="wifi-off" color="#ef4444" />
+          </View>
+          <TouchableOpacity className="mt-0.5">
+            <Text className="text-xs text-gray-400">
+              Clique aqui para iniciar configuração
+            </Text>
+          </TouchableOpacity>
+        </Section>
+
+        <Section
+          title="Acessos recentes"
+          link={{ title: 'Ver todos', screen: 'Access' }}
+          className="mt-5"
+        >
+          <Box rounded="lg" className="bg-white px-1.5">
+            <FlatList
+              data={data}
+              renderItem={({ item, index }) => {
+                return (
+                  <View>
+                    <View className="flex-row items-center justify-between w-full py-3 px-2">
+                      <View className="gap-0.5">
+                        <Text className="text-xs font-semibold">
+                          {item.title}
+                        </Text>
+                        <Text className="text-xs text-gray-400">
+                          {item.subtitle}
+                        </Text>
+                      </View>
+
+                      <Text className="text-xs text-gray-400">
+                        {item.detail.toFormat('dd/MM/yy')} •{' '}
+                        {item.detail.toFormat('HH:mm')}
+                      </Text>
+                    </View>
+
+                    {index < data.length - 1 && (
+                      <Divider className="bg-gray-100" />
+                    )}
+                  </View>
+                )
+              }}
+            />
+          </Box>
+
+          <View className="flex-row w-full justify-end pt-1">
+            <Text className="flex text-gray-500 text-xs text-right">
+              Conecte-se para atualizar a lista
+            </Text>
+          </View>
+        </Section>
+
+        <Section
+          title="Usuários"
+          link={{ title: 'Ver todos', screen: 'Access' }}
+          className="mt-5"
+        >
+          <Box rounded="lg" className="bg-white px-1.5">
+            <FlatList
+              data={data}
+              renderItem={({ item, index }) => {
+                return (
+                  <View>
+                    <View className="flex-row items-center justify-between w-full py-3 px-2">
+                      <View className="gap-0.5">
+                        <Text className="text-xs font-semibold">
+                          {item.title}
+                        </Text>
+                        <Text className="text-xs text-gray-400">
+                          {item.subtitle}
+                        </Text>
+                      </View>
+
+                      <Text className="text-xs text-gray-400">
+                        {item.detail.toFormat('dd/MM/yy')} •{' '}
+                        {item.detail.toFormat('HH:mm')}
+                      </Text>
+                    </View>
+
+                    {index < data.length - 1 && (
+                      <Divider className="bg-gray-100" />
+                    )}
+                  </View>
+                )
+              }}
+            />
+          </Box>
+
+          <View className="flex-row w-full justify-end pt-1">
+            <Text className="flex text-gray-500 text-xs text-right">
+              Conecte-se para atualizar a lista
+            </Text>
+          </View>
+        </Section>
       </SafeAreaView>
-
-      <Section
-        title="Conexão"
-        link={{ title: 'Configurar', screen: 'ConnectionSetup' }}
-        className="mt-5"
-      >
-        <View className="flex-row items-center gap-1">
-          <Text className="text-red-500 text-xs">Offline</Text>
-          <Feather name="wifi-off" color="#ef4444" />
-        </View>
-        <TouchableOpacity className="mt-0.5">
-          <Text className="text-[10px] text-gray-400">
-            Clique aqui para iniciar configuração
-          </Text>
-        </TouchableOpacity>
-      </Section>
-
-      <Section
-        title="Acessos recentes"
-        link={{ title: 'Ver todos', screen: 'Access' }}
-        className="mt-5"
-      >
-        <Box rounded="lg" className="bg-white px-1.5">
-          <FlatList
-            data={data}
-            renderItem={({ item, index }) => {
-              return (
-                <View>
-                  <View className="flex-row items-center justify-between w-full py-3 px-2">
-                    <View className="gap-0.5">
-                      <Text className="text-xs font-semibold">
-                        {item.title}
-                      </Text>
-                      <Text className="text-[10px] font-medium text-gray-400">
-                        {item.subtitle}
-                      </Text>
-                    </View>
-
-                    <Text className="text-[10px] text-gray-400">
-                      {item.detail.toFormat('dd/MM/yy')} •{' '}
-                      {item.detail.toFormat('HH:mm')}
-                    </Text>
-                  </View>
-
-                  {index < data.length - 1 && (
-                    <Divider className="bg-gray-100" />
-                  )}
-                </View>
-              )
-            }}
-          />
-        </Box>
-
-        <View className="flex-row w-full justify-end pt-1">
-          <Text className="flex text-gray-500 text-[10px] text-right">
-            Conecte-se para atualizar a lista
-          </Text>
-        </View>
-      </Section>
-
-      <Section
-        title="Usuários"
-        link={{ title: 'Ver todos', screen: 'Access' }}
-        className="mt-5"
-      >
-        <Box rounded="lg" className="bg-white px-1.5">
-          <FlatList
-            data={data}
-            renderItem={({ item, index }) => {
-              return (
-                <View>
-                  <View className="flex-row items-center justify-between w-full py-3 px-2">
-                    <View className="gap-0.5">
-                      <Text className="text-xs font-semibold">
-                        {item.title}
-                      </Text>
-                      <Text className="text-[10px] font-medium text-gray-400">
-                        {item.subtitle}
-                      </Text>
-                    </View>
-
-                    <Text className="text-[10px] text-gray-400">
-                      {item.detail.toFormat('dd/MM/yy')} •{' '}
-                      {item.detail.toFormat('HH:mm')}
-                    </Text>
-                  </View>
-
-                  {index < data.length - 1 && (
-                    <Divider className="bg-gray-100" />
-                  )}
-                </View>
-              )
-            }}
-          />
-        </Box>
-
-        <View className="flex-row w-full justify-end pt-1">
-          <Text className="flex text-gray-500 text-[10px] text-right">
-            Conecte-se para atualizar a lista
-          </Text>
-        </View>
-      </Section>
     </LinearGradient>
   )
 }
