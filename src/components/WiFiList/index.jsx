@@ -1,4 +1,4 @@
-import { Center, HStack, Modal, Spinner } from 'native-base'
+import { Center, Modal, Spinner, Toast } from 'native-base'
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
@@ -6,6 +6,7 @@ import { PermissionsAndroid } from 'react-native'
 import WifiManager from 'react-native-wifi-reborn'
 import Cond, { CondItem } from '../Cond'
 import { Feather } from '@expo/vector-icons'
+import Geolocation from '@react-native-community/geolocation'
 
 const WiFiList = ({ className, onError, onConnected }) => {
   const [permissionGranted, setPermissionGranted] = useState(false)
@@ -18,8 +19,24 @@ const WiFiList = ({ className, onError, onConnected }) => {
   }, [networks])
 
   useEffect(() => {
-    ;(async () => {
-      if (permissionGranted) return
+    let timeout = null
+
+    const fn = async () => {
+      Geolocation.getCurrentPosition(
+        () => Toast.closeAll(),
+        () => {
+          if (!Toast.isActive('location-detector')) {
+            Toast.show({
+              id: 'location-detector',
+              backgroundColor: '#E50014',
+              description: 'Habilite a localização do dispositivo.',
+              duration: 1000 * 60,
+            })
+          }
+
+          timeout = setTimeout(fn, 2000)
+        }
+      )
 
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -37,15 +54,22 @@ const WiFiList = ({ className, onError, onConnected }) => {
         setLoading(true)
         loadWifiList()
       }
-    })()
+    }
+
+    fn()
+
+    return () => {
+      Toast.closeAll()
+      clearTimeout(timeout)
+    }
   }, [])
 
   async function loadWifiList() {
-    const networkList = await WifiManager.loadWifiList().catch((error) =>
-      onError({ error, message: 'Error while loading WiFi list' })
-    )
-
-    setNetworks(networkList)
+    WifiManager.loadWifiList()
+      .then(setNetworks)
+      .catch((error) =>
+        onError({ error, message: 'Error while loading WiFi list' })
+      )
   }
 
   function onWiFiSelected(wifi) {

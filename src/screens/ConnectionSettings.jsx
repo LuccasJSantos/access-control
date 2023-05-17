@@ -1,4 +1,4 @@
-import { Button, Icon, IconButton, Text } from 'native-base'
+import { Button, IconButton, Text } from 'native-base'
 import { SafeAreaView, StatusBar, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useEffect } from 'react'
@@ -59,7 +59,7 @@ function ConnectionSettings() {
     })
   }
 
-  const renderStepIndicator = ({ position, stepStatus }) => {
+  function renderStepIndicator({ position, stepStatus }) {
     const style =
       guide.steps[position].state === 'error'
         ? 'text-error'
@@ -76,7 +76,7 @@ function ConnectionSettings() {
     )
   }
 
-  const renderLabel = ({ label, position, stepStatus }) => {
+  function renderLabel({ label, position, stepStatus }) {
     const style =
       guide.steps[position].state === 'error'
         ? 'text-error'
@@ -91,7 +91,7 @@ function ConnectionSettings() {
     )
   }
 
-  const getCurrentStrokeColor = () => {
+  function getCurrentStrokeColor() {
     const state = guide.steps[guide.currentStep].state
     return state === 'error'
       ? '#E50014'

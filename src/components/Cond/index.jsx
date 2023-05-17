@@ -10,6 +10,7 @@ const Cond = ({ watch, children, className }) => {
   )
 }
 
+// eslint-disable-next-line no-unused-vars
 export const CondItem = ({ when, children, className }) => {
   return <View className={className}>{children}</View>
 }
