@@ -1,7 +1,10 @@
 import { Feather } from '@expo/vector-icons'
 import { Text, View } from 'react-native'
+import useState from './state'
 
-const ConnectionStatus = ({ className, connected = false }) => {
+const ConnectionStatus = ({ className }) => {
+  const { connected } = useState()
+
   return (
     <View className={`flex-row items-center gap-3 ml-[-8px] ${className}`}>
       {connected ? (

@@ -1,7 +1,6 @@
 import { Button, IconButton, Text } from 'native-base'
 import { SafeAreaView, StatusBar, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
-import { useEffect } from 'react'
 import { useState } from 'react'
 import StepIndicator from 'react-native-step-indicator'
 import ConnectionStatus from '../components/ConnectionStatus'
@@ -10,12 +9,17 @@ import Cond, { CondItem } from '../components/Cond'
 import ConnectionTest from '../components/ConnectionTest'
 import { Feather } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
+import useConnectionStatusState from '../components/ConnectionStatus/state'
 
 function ConnectionSettings() {
-  const connectionStatus = false
+  const { connected } = useConnectionStatusState()
 
   const navigation = useNavigation()
-  const [connectionText, setConnectionText] = useState('')
+
+  const connectionText = connected
+    ? 'Tudo certo com sua conexão com a porta!'
+    : 'Inicie a configuração abaixo e siga o passo a passo para realizar a conexão com a porta.'
+
   const [guide, setGuide] = useState({
     started: false,
     currentStep: 0,
@@ -25,14 +29,6 @@ function ConnectionSettings() {
       { text: '', state: 'unfinished' },
     ],
   })
-
-  useEffect(() => {
-    setConnectionText(
-      connectionStatus
-        ? 'Tudo certo com sua conexão com a porta!'
-        : 'Inicie a configuração abaixo e siga o passo a passo para realizar a conexão com a porta.'
-    )
-  }, [connectionStatus])
 
   function setStepByIndex(index, value) {
     return {
@@ -111,13 +107,13 @@ function ConnectionSettings() {
       <SafeAreaView style={{ marginTop: StatusBar.currentHeight }}>
         <View className="w-full gap-1">
           <Text className="text-xl font-bold text-gray-500">Conexão</Text>
-          <ConnectionStatus className="mt-0.5" connected={connectionStatus} />
+          <ConnectionStatus className="mt-0.5" />
           <Text className="text-xs text-gray-500">{connectionText}</Text>
         </View>
 
         <View className="mt-56">
           {/* Guide Text */}
-          {!connectionStatus && !guide.started && (
+          {!connected && !guide.started && (
             <View className="gap-5">
               <Text className="text-xl leading-8 text-gray-500">
                 Você não está conectado no momento, clique no botão abaixo para
