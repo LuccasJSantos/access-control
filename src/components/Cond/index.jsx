@@ -1,7 +1,7 @@
 import { View } from 'react-native'
 
 const Cond = ({ watch, children, className }) => {
-  if (!children.find) return <>{children}</>
+  if (!children.find) return <View className={className}>{children}</View>
 
   return (
     <View className={className}>

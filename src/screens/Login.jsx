@@ -7,32 +7,31 @@ import {
   Text,
   View,
 } from 'react-native'
-import { Button, FormControl, Input } from 'native-base'
+import { Button, Spinner } from 'native-base'
 import bg from '../../assets/login-bg.png'
-import logo from '../../assets/fatec-logo.png'
+import logo from '../../assets/logo.png'
 import { useNavigation } from '@react-navigation/native'
+import Cond, { CondItem } from '../components/Cond'
 
 function Login() {
   const navigation = useNavigation()
-
-  const [data, setData] = useState({ username: '', password: '' })
-  const [errors, setErrors] = useState({ username: '', password: '' })
+  const [state, setState] = useState('card') // idle | card
 
   function onLogin() {
-    setErrors({
-      username: data.username ? '' : 'Preencha o usuário',
-      password: data.password ? '' : 'Preencha a senha',
-    })
-
-    if (data.username && data.password) {
-      navigation.reset({ index: 0, routes: [{ name: 'home' }] })
-    }
+    navigation.reset({ index: 0, routes: [{ name: 'home' }] })
   }
 
+  const LoginText = ({ text }) => (
+    <Text className="font-semibold text-center text-white text-xl">{text}</Text>
+  )
+
   return (
-    <ImageBackground className="flex-1" source={bg} resizeMode="cover">
+    <ImageBackground className="flex-1 relative" source={bg} resizeMode="cover">
+      {/* Overlay */}
+      <View className="absolute top-0 left-0 w-full h-full bg-[#0F131A90]" />
+
       <SafeAreaView
-        className="flex-1 items-center justify-center w-full h-full px-10 space-y-[120px]"
+        className="flex-1 items-center justify-center w-full h-full px-10"
         style={{ marginTop: StatusBar.currentHeight }}
       >
         {/* Logo */}
@@ -46,43 +45,20 @@ function Login() {
         />
 
         {/* Login */}
-        <View className="flex-row">
-          <View className="flex-1">
-            <Text className="font-semibold text-white text-2xl">Login</Text>
+        <Cond watch={state} className="flex-row mt-40">
+          <CondItem when="idle" className="flex-1 space-y-16">
+            <LoginText text="Para iniciar uma nova sessão clique no botão abaixo" />
 
-            <FormControl isRequired isInvalid={errors.username}>
-              <Input
-                placeholder="Usuário"
-                variant="underlined"
-                onChangeText={(value) => setData({ ...data, username: value })}
-                className="text-white"
-              />
-              {errors.username && (
-                <FormControl.ErrorMessage>
-                  {errors.username}
-                </FormControl.ErrorMessage>
-              )}
-            </FormControl>
-
-            <FormControl isRequired isInvalid={errors.password}>
-              <Input
-                placeholder="Senha"
-                variant="underlined"
-                onChangeText={(value) => setData({ ...data, password: value })}
-                className="text-white"
-              />
-              {errors.password && (
-                <FormControl.ErrorMessage>
-                  {errors.password}
-                </FormControl.ErrorMessage>
-              )}
-            </FormControl>
-
-            <Button className="mt-6 bg-accent" onPress={onLogin}>
+            <Button className="bg-accent" onPress={onLogin}>
               Login
             </Button>
-          </View>
-        </View>
+          </CondItem>
+          <CondItem when="card" className="flex-1 space-y-16">
+            <LoginText text="Passe o cartão para autenticar seu usuário" />
+
+            <Spinner size="lg" />
+          </CondItem>
+        </Cond>
       </SafeAreaView>
     </ImageBackground>
   )
