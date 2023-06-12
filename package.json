@@ -35,7 +35,9 @@
     "react-native-step-indicator": "^1.0.3",
     "react-native-svg": "13.4.0",
     "react-native-web": "~0.18.10",
-    "react-native-wifi-reborn": "^4.7.0"
+    "react-native-wifi-reborn": "^4.7.0",
+    "@react-native-community/netinfo": "9.3.7",
+    "expo-network": "~5.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

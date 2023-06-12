@@ -2,6 +2,7 @@ import { Feather } from '@expo/vector-icons'
 import { ScrollView } from 'native-base'
 import { useState } from 'react'
 import { Text, View } from 'react-native'
+import * as Network from 'expo-network'
 import Cond, { CondItem } from '../Cond'
 import { useEffect } from 'react'
 
@@ -16,10 +17,10 @@ const ConnectionTest = ({ onCompleted, onError }) => {
   ]) // state :: unfinished | current | finished | error
 
   const setStepByIndex = (index, value) => {
-    setSteps([
-      ...steps.slice(0, index),
-      { ...steps[index], ...value },
-      ...steps.slice(index + 1),
+    setSteps((current) => [
+      ...current.slice(0, index),
+      { ...current[index], ...value },
+      ...current.slice(index + 1),
     ])
   }
 
@@ -30,11 +31,38 @@ const ConnectionTest = ({ onCompleted, onError }) => {
       return setTimeout(onCompleted, 1500)
     }
 
-    setCurrentStep(currentStep + 1)
+    setCurrentStep((current) => current + 1)
   }
 
-  function findNodeMCU() {
-    setTimeout(onStepCompleted, 1000)
+  function onStepError(error) {
+    setStepByIndex(currentStep, { state: 'error' })
+    onError({ error })
+  }
+
+  async function findNodeMCU() {
+    await Network.getIpAddressAsync()
+      .then(async (ip) => {
+        const [net] = ip.split(/\.(?=\d*$)/)
+
+        const lookup = await Promise.all(
+          new Array(10).fill().map(async (_, host) => {
+            const ip = `${net}.${host}`
+
+            return await fetch(`http://${ip}:3001/nodemcu-setup`)
+              .then((res) => (res.status === 200 ? ip : ''))
+              .catch(() => '')
+          })
+        )
+
+        const ips = lookup.find(Boolean) || []
+
+        return ips.length
+          ? Promise.resolve()
+          : Promise.reject(new Error('NodeMCU not found'))
+      })
+      .then(onStepCompleted)
+      .catch(onStepError)
+
     console.log('Find')
   }
 
@@ -58,15 +86,19 @@ const ConnectionTest = ({ onCompleted, onError }) => {
 
     switch (currentStep) {
       case 0:
-        return findNodeMCU()
+        findNodeMCU()
+        break
       case 1:
-        return testConnection()
+        testConnection()
+        break
       case 2:
-        return testReading()
+        testReading()
+        break
       case 3:
-        return testWriting()
+        testWriting()
+        break
       default:
-        return
+        break
     }
   }, [currentStep])
 
