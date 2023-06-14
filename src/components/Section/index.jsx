@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native'
 import { ArrowForwardIcon } from 'native-base'
 import { Text, TouchableOpacity, View } from 'react-native'
 
-function Section({ children, className, link, title }) {
+const Section = ({ children, className, link, title }) => {
   const navigation = useNavigation()
 
   return (

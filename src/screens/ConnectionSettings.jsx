@@ -4,17 +4,20 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import StepIndicator from 'react-native-step-indicator'
-import ConnectionStatus from '../components/ConnectionStatus'
 import WiFiList from '../components/WiFiList'
 import Cond, { CondItem } from '../components/Cond'
 import ConnectionTest from '../components/ConnectionTest'
+import ConnectionWidget from '../components/ConnectionWidget'
 import { Feather } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import useConnection from '../hooks/connection'
 
 function ConnectionSettings() {
-  const connectionStatus = false
+  const { connected } = useConnection()
 
   const navigation = useNavigation()
+  const route = useRoute()
+
   const [connectionText, setConnectionText] = useState('')
   const [guide, setGuide] = useState({
     started: false,
@@ -27,12 +30,17 @@ function ConnectionSettings() {
   })
 
   useEffect(() => {
+    if (connected && route.params?.login) {
+      navigation.reset({ index: 0, routes: [{ name: 'login' }] })
+      return
+    }
+
     setConnectionText(
-      connectionStatus
+      connected
         ? 'Tudo certo com sua conexão com a porta!'
         : 'Inicie a configuração abaixo e siga o passo a passo para realizar a conexão com a porta.'
     )
-  }, [connectionStatus])
+  }, [connected])
 
   function setStepByIndex(index, value) {
     return {
@@ -111,13 +119,13 @@ function ConnectionSettings() {
       <SafeAreaView style={{ marginTop: StatusBar.currentHeight }}>
         <View className="w-full gap-1">
           <Text className="text-xl font-bold text-gray-500">Conexão</Text>
-          <ConnectionStatus className="mt-0.5" connected={connectionStatus} />
+          <ConnectionWidget className="mt-0.5" />
           <Text className="text-xs text-gray-500">{connectionText}</Text>
         </View>
 
         <View className="mt-56">
           {/* Guide Text */}
-          {!connectionStatus && !guide.started && (
+          {!connected && !guide.started && (
             <View className="gap-5">
               <Text className="text-xl leading-8 text-gray-500">
                 Você não está conectado no momento, clique no botão abaixo para
@@ -142,7 +150,7 @@ function ConnectionSettings() {
               </View>
 
               {/* Guide Stepper */}
-              <View className="mt-9">
+              <View className="mt-9.5">
                 <StepIndicator
                   customStyles={{
                     stepStrokeCurrentColor: getCurrentStrokeColor(),

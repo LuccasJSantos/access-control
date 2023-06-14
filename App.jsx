@@ -24,13 +24,13 @@ export default function App() {
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="home"
-            component={Home}
+            name="connection-settings"
+            component={ConnectionSettings}
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="connection-settings"
-            component={ConnectionSettings}
+            name="home"
+            component={Home}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

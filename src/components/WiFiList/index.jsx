@@ -4,9 +4,9 @@ import { useEffect } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { PermissionsAndroid } from 'react-native'
 import WifiManager from 'react-native-wifi-reborn'
-import Cond, { CondItem } from '../Cond'
 import { Feather } from '@expo/vector-icons'
 import Geolocation from '@react-native-community/geolocation'
+import Cond, { CondItem } from '../Cond'
 
 const WiFiList = ({ className, onError, onConnected }) => {
   const [permissionGranted, setPermissionGranted] = useState(false)

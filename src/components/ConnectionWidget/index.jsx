@@ -1,9 +1,12 @@
-import { Feather } from '@expo/vector-icons'
 import { Text, View } from 'react-native'
+import { Feather } from '@expo/vector-icons'
+import useConnection from '../../hooks/connection'
 
-const ConnectionStatus = ({ className, connected = false }) => {
+const Widget = ({ className }) => {
+  const { connected } = useConnection()
+
   return (
-    <View className={`flex-row items-center gap-3 ml-[-8px] ${className}`}>
+    <View className={`flex-row items-center gap-3 ml-[-7px] ${className}`}>
       {connected ? (
         <Text className="text-xs text-[#53BD21]">Online</Text>
       ) : (
@@ -19,4 +22,4 @@ const ConnectionStatus = ({ className, connected = false }) => {
   )
 }
 
-export default ConnectionStatus
+export default Widget

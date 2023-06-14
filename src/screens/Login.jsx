@@ -7,23 +7,47 @@ import {
   Text,
   View,
 } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 import { Button, Spinner } from 'native-base'
 import bg from '../../assets/login-bg.png'
 import logo from '../../assets/logo.png'
-import { useNavigation } from '@react-navigation/native'
 import Cond, { CondItem } from '../components/Cond'
+import useConnection from '../hooks/connection'
+import { useEffect } from 'react'
 
 function Login() {
   const navigation = useNavigation()
-  const [state, setState] = useState('card') // idle | card
+  const { connected } = useConnection()
+  const [state, setState] = useState('idle') // idle | card
+
+  function checkState() {
+    if (state === 'card') {
+      console.log('Waiting for card connection')
+    }
+  }
 
   function onLogin() {
-    navigation.reset({ index: 0, routes: [{ name: 'home' }] })
+    setState('card')
+    // navigation.reset({ index: 0, routes: [{ name: 'home' }] })
   }
 
   const LoginText = ({ text }) => (
     <Text className="font-semibold text-center text-white text-xl">{text}</Text>
   )
+
+  useEffect(() => {
+    console.log({ connected })
+    if (connected === false) {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'connection-settings', params: { login: true } }],
+      })
+    }
+  }, [connected])
+
+  useEffect(() => {}, [state])
+
+  checkState()
 
   return (
     <ImageBackground className="flex-1 relative" source={bg} resizeMode="cover">
