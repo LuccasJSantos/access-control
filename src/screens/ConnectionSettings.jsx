@@ -1,8 +1,7 @@
 import { Button, IconButton, Text } from 'native-base'
 import { SafeAreaView, StatusBar, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
-import { useEffect } from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import StepIndicator from 'react-native-step-indicator'
 import WiFiList from '../components/WiFiList'
 import Cond, { CondItem } from '../components/Cond'
@@ -18,7 +17,10 @@ function ConnectionSettings() {
   const navigation = useNavigation()
   const route = useRoute()
 
-  const [connectionText, setConnectionText] = useState('')
+  const connectionText = connected
+    ? 'Tudo certo com sua conexão com a porta!'
+    : 'Inicie a configuração abaixo e siga o passo a passo para realizar a conexão com a porta.'
+
   const [guide, setGuide] = useState({
     started: false,
     currentStep: 0,
@@ -34,12 +36,6 @@ function ConnectionSettings() {
       navigation.reset({ index: 0, routes: [{ name: 'login' }] })
       return
     }
-
-    setConnectionText(
-      connected
-        ? 'Tudo certo com sua conexão com a porta!'
-        : 'Inicie a configuração abaixo e siga o passo a passo para realizar a conexão com a porta.'
-    )
   }, [connected])
 
   function setStepByIndex(index, value) {
