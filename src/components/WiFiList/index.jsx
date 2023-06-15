@@ -1,12 +1,21 @@
-import { Center, Modal, Spinner } from 'native-base'
+import { Button, Center, Input, Modal, Spinner } from 'native-base'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import Cond, { CondItem } from '../Cond'
 import useState from './state'
+import { useRef } from 'react'
 
-const WiFiList = ({ className, onError, onConnected }) => {
-  const { permissionGranted, loading, networks, onWiFiSelected, selectedWiFi } =
-    useState({ errorFn: onError, successFn: onConnected })
+const WiFiList = ({ className, onError, onConnect }) => {
+  const {
+    permissionGranted,
+    loading,
+    networks,
+    selectedWiFi,
+    onWiFiSelected,
+    onConnectPress,
+  } = useState({ errorFn: onError, successFn: onConnect })
+
+  const refWifiPass = useRef(null)
 
   const Loading = () => (
     <View className="flex-row items-center gap-2">
@@ -15,28 +24,56 @@ const WiFiList = ({ className, onError, onConnected }) => {
     </View>
   )
 
-  const NetworkList = ({ items }) => (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      className="gap-1.5"
-    >
-      {items
-        .sort((a, b) => (Number(a.level) > Number(b.level) ? -1 : 1))
-        .map((it, i) => (
-          <TouchableOpacity
-            key={i}
-            className="flex-row items-center gap-2 pr-3 pl-1 pb-2 rounded-lg border-b-2 border-gray-200 bg-white"
-            onPress={() => onWiFiSelected(it)}
-          >
-            <Text className="flex w-24" numberOfLines={1}>
-              {it.SSID}
-            </Text>
-            <Feather name="wifi" size={16} />
-          </TouchableOpacity>
-        ))}
-    </ScrollView>
-  )
+  const NetworkList = ({ items }) => {
+    return (
+      <View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="gap-1.5"
+        >
+          {items
+            .sort((a, b) => (Number(a.level) > Number(b.level) ? -1 : 1))
+            .map((it, i) => (
+              <TouchableOpacity
+                key={i}
+                className={`flex-row items-center gap-2 pr-3 pl-1 pb-2 rounded-lg border-b-2 border-gray-200 bg-white ${
+                  it.enabled ? 'border-2 border-green-500' : ''
+                }`}
+                onPress={() => onWiFiSelected(i)}
+              >
+                <Text className="flex w-24" numberOfLines={1}>
+                  {it.SSID}
+                </Text>
+                <Feather name="wifi" size={16} />
+              </TouchableOpacity>
+            ))}
+        </ScrollView>
+
+        <Input
+          ref={refWifiPass}
+          onChangeText={(e) => (refWifiPass.current.value = e)}
+          variant="underlined"
+          placeholder="Insira a senha"
+          type="password"
+          className="mt-4"
+        />
+
+        <Button
+          onPress={() => {
+            console.log(refWifiPass.current.value)
+            onConnectPress({
+              ssid: selectedWiFi.SSID,
+              password: refWifiPass.current.value,
+            })
+          }}
+          className="mt-4 bg-green-500"
+        >
+          Conectar
+        </Button>
+      </View>
+    )
+  }
 
   return (
     <View className={className}>
@@ -54,7 +91,7 @@ const WiFiList = ({ className, onError, onConnected }) => {
       </Cond>
 
       {/* Loading Modal */}
-      <Center>
+      {/* <Center>
         <Modal isOpen={Boolean(selectedWiFi.SSID)} size="sm">
           <Modal.Content maxH="212">
             <Modal.Header>Conectando</Modal.Header>
@@ -69,7 +106,7 @@ const WiFiList = ({ className, onError, onConnected }) => {
             </Modal.Body>
           </Modal.Content>
         </Modal>
-      </Center>
+      </Center> */}
     </View>
   )
 }

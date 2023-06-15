@@ -17,22 +17,13 @@ export default function App() {
     <NavigationContainer>
       <NativeBaseProvider>
         <StatusBar hidden height="auto" />
-        <Stack.Navigator>
-          <Stack.Screen
-            name="login"
-            component={Login}
-            options={{ headerShown: false }}
-          />
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="login" component={Login} />
           <Stack.Screen
             name="connection-settings"
             component={ConnectionSettings}
-            options={{ headerShown: false }}
           />
-          <Stack.Screen
-            name="home"
-            component={Home}
-            options={{ headerShown: false }}
-          />
+          <Stack.Screen name="home" component={Home} />
         </Stack.Navigator>
       </NativeBaseProvider>
     </NavigationContainer>

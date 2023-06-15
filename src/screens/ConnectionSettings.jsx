@@ -1,5 +1,5 @@
 import { Button, IconButton, Text } from 'native-base'
-import { SafeAreaView, StatusBar, View } from 'react-native'
+import { StatusBar, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useEffect, useState } from 'react'
 import StepIndicator from 'react-native-step-indicator'
@@ -13,6 +13,8 @@ import useConnection from '../hooks/connection'
 
 function ConnectionSettings() {
   const { connected } = useConnection()
+  const [ssid, setSsid] = useState('')
+  const [password, setPassword] = useState('')
 
   const navigation = useNavigation()
   const route = useRoute()
@@ -46,6 +48,24 @@ function ConnectionSettings() {
         ...guide.steps.slice(index + 1),
       ],
     }
+  }
+
+  function reset() {
+    const steps = guide.steps.slice(1)
+
+    steps.forEach((_, i) => {
+      const { steps } = setStepByIndex(i + 1, { state: 'unfinished' })
+      setGuide((current) => ({ ...current, steps }))
+    })
+
+    setGuide((current) => {
+      const { steps } = setStepByIndex(0, { state: 'current' })
+      return {
+        ...current,
+        currentStep: 0,
+        steps,
+      }
+    })
   }
 
   function onStepCompleted(response) {
@@ -112,14 +132,17 @@ function ConnectionSettings() {
       locations={[0, 0.05, 1]}
       className="absolute -z-10 top-0 left-0 w-full h-full py-3 px-5"
     >
-      <SafeAreaView style={{ marginTop: StatusBar.currentHeight }}>
+      <View
+        className="h-full justify-between"
+        style={{ marginTop: StatusBar.currentHeight }}
+      >
         <View className="w-full gap-1">
           <Text className="text-xl font-bold text-gray-500">Conexão</Text>
           <ConnectionWidget className="mt-0.5" />
           <Text className="text-xs text-gray-500">{connectionText}</Text>
         </View>
 
-        <View className="mt-56">
+        <View>
           {/* Guide Text */}
           {!connected && !guide.started && (
             <View className="gap-5">
@@ -177,14 +200,20 @@ function ConnectionSettings() {
                   <Cond watch={guide.currentStep}>
                     <CondItem when={0}>
                       <WiFiList
-                        onConnected={onStepCompleted}
+                        onConnect={({ ssid, password }) => {
+                          setSsid(ssid)
+                          setPassword(password)
+                          onStepCompleted()
+                        }}
                         onError={onStepCompleted}
                       />
                     </CondItem>
                     <CondItem when={1}>
                       <ConnectionTest
+                        data={{ ssid, password }}
                         onCompleted={onStepCompleted}
                         onError={onStepCompleted}
+                        onBack={reset}
                       />
                     </CondItem>
                     <CondItem when={2} className="items-center">
@@ -220,7 +249,8 @@ function ConnectionSettings() {
             </View>
           )}
         </View>
-      </SafeAreaView>
+        <View />
+      </View>
     </LinearGradient>
   )
 }

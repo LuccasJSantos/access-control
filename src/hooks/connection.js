@@ -13,6 +13,7 @@ import {
   APP_NODEMCU_PORT,
   APP_NODEMCU_CONNECTION_EXPIRE,
 } from '@env'
+import axios from 'axios'
 
 /*
 const Data = {
@@ -26,8 +27,6 @@ const useConnection = () => {
   const [ pass, setPass ] = useState('')
   const [ expire, setExpire ] = useState('')
   const endpoint = ip ? `http://${ip}` : ''
-
-  console.log({ endpoint })
 
   const connectionCheck = async (ip) => {
     return await fetch(`${endpoint}?dooraccess=1`)
@@ -54,7 +53,7 @@ const useConnection = () => {
       })
       .catch(error => {
         setConnected(false)
-        console.log('Connection init error:\n', { error })
+        console.log('Connection init error:', { error })
       })
   }
 
@@ -88,38 +87,67 @@ const useConnection = () => {
       .then(async deviceIp => {
         const [net] = deviceIp.split(/\.(?=\d*$)/)
 
-        const lookup = await Promise.all(
-          new Array(10).fill().map(async (_, host) => {
-            const ip = `${net}.${host}`
+        const ip = await Promise.race(
+          new Array(256).fill().map((_, host) => {
+            const ip = `${net}.${host + 1}`
+            console.log({ ip })
 
-            return await connectionCheck(ip)
+            return new Promise((resolve, reject) => {
+              return axios.get(`http://${ip}/dooraccess`)
+                .then(res => {
+                  console.log(res.status, res.data)
+
+                  return resolve(res.status === 200 ? ip : '')
+                })
+                .catch(() => setTimeout(reject, 10000))
+            })
           })
         )
 
-        const ip = lookup.find(Boolean) || ''
-
-        if (!ip.length) {
+        if (!ip) {
           return Promise.reject(new Error('NodeMCU not found'))
         }
+
+        console.log({ ip })
 
         return Promise.resolve(ip)
       })
   }
 
-  const connect = async () => {
-    return WifiManager.connectToProtectedSSID(APP_NODEMCU_SSID, APP_NODEMCU_PASS, true)
-      .then(() => fetch({
-        method: 'POST',
-        url: `http://${APP_NODEMCU_HOST}:${APP_NODEMCU_PORT}/?ssid=${ssid}&pass=${pass}`
-      }))
-      .then(getMcuIp)
-      .then(connectionCheck)
-      .catch(console.error)
+  const connect = async ({ ssid, password }) => {
+    console.log(`Connecting: ${APP_NODEMCU_SSID} : ${APP_NODEMCU_PASS}`)
+    // return fetch({
+    //   method: 'POST',
+    //   url: `http://${APP_NODEMCU_HOST}/?ssid=${ssid}&pass=${password}`
+    // })
+    return WifiManager.connectToProtectedSSID(APP_NODEMCU_SSID, APP_NODEMCU_PASS, false)
+      .then(status => {
+        console.log({ status })
+
+        return axios.get(`http://${APP_NODEMCU_HOST}/ssid?ssid=${ssid}&pass=${password}`)
+      })
+      .then(res => {
+        console.log('Status', res.status)
+        console.log('Sent SSID and PASS =============')
+        console.log(res.data)
+      })
+      .catch(error => {
+        console.log('Erro')
+        console.log(error.message)
+      })
+      // .then(getMcuIp)
+      // .then(connectionCheck)
+      // .then((result) => {
+      //   if (!result) return
+
+    //   setSsid(ssid)
+    //   setPass(password)
+    // })
   }
 
   useEffect(() => { connectionCheck() }, [ip])
 
-  return { connected, ip, ssid, connectionInit, connectionCheck, connect }
+  return { connected, ip, ssid, getMcuIp, connectionInit, connectionCheck, connect }
 }
 
 export default useConnection
