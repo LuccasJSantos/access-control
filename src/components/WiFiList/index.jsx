@@ -61,7 +61,6 @@ const WiFiList = ({ className, onError, onConnect }) => {
 
         <Button
           onPress={() => {
-            console.log(refWifiPass.current.value)
             onConnectPress({
               ssid: selectedWiFi.SSID,
               password: refWifiPass.current.value,

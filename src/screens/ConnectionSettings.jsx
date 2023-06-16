@@ -10,6 +10,7 @@ import ConnectionWidget from '../components/ConnectionWidget'
 import { Feather } from '@expo/vector-icons'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import useConnection from '../hooks/connection'
+import u from '../utils'
 
 function ConnectionSettings() {
   const { connected } = useConnection()
@@ -51,21 +52,14 @@ function ConnectionSettings() {
   }
 
   function reset() {
-    const steps = guide.steps.slice(1)
+    const [first, ...steps] = guide.steps.map(u.assoc('state', 'unfinished'))
+    const firstStep = u.assoc('state', 'current')(first)
 
-    steps.forEach((_, i) => {
-      const { steps } = setStepByIndex(i + 1, { state: 'unfinished' })
-      setGuide((current) => ({ ...current, steps }))
-    })
-
-    setGuide((current) => {
-      const { steps } = setStepByIndex(0, { state: 'current' })
-      return {
-        ...current,
-        currentStep: 0,
-        steps,
-      }
-    })
+    setGuide((current) => ({
+      ...current,
+      currentStep: 0,
+      steps: [firstStep, ...steps],
+    }))
   }
 
   function onStepCompleted(response) {
@@ -238,7 +232,16 @@ function ConnectionSettings() {
                               name: 'check',
                               size: 6,
                             }}
-                            onPress={() => navigation.goBack()}
+                            onPress={() => {
+                              if (route.params?.login) {
+                                navigation.reset({
+                                  index: 0,
+                                  routes: [{ name: 'login' }],
+                                })
+                              } else {
+                                navigation.goBack()
+                              }
+                            }}
                           />
                         </View>
                       </View>

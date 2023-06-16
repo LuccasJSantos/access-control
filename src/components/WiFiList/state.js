@@ -3,6 +3,8 @@ import {useEffect, useState} from 'react'
 import { PermissionsAndroid } from 'react-native'
 import WifiManager from 'react-native-wifi-reborn'
 import Geolocation from '@react-native-community/geolocation'
+import { requestPermission } from '../../utils/native'
+import u from '../../utils'
 
 export default ({ successFn, errorFn }) => {
   const [permissionGranted, setPermissionGranted] = useState(false)
@@ -34,18 +36,19 @@ export default ({ successFn, errorFn }) => {
         }
       )
 
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: 'Permissão de Localização Necessária',
-          message:
-            'Este aplicativo solicita permissão para utilizar a localização do dispositivo para buscar redes Wi-Fi disponíveis.',
-          buttonNegative: 'DENY',
-          buttonPositive: 'ALLOW',
-        }
-      )
+      const accessFineLocation = await requestPermission({
+        permission: 'ACCESS_FINE_LOCATION',
+        title: 'Acesso à localização',
+        message: 'Este aplicativo solicita permissão para utilizar a localização do dispositivo para buscar redes Wi-Fi disponíveis.',
+      })
 
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      const accessNearbyDevices = await requestPermission({
+        permission: 'NEARBY_WIFI_DEVICES',
+        title: 'Acesso à dispositivos próximos',
+        message: 'Este aplicativo solicita permissão para encontrar dispositivos próximos que utilizam rede Wi-Fi',
+      })
+
+      if (accessFineLocation && accessNearbyDevices) {
         setPermissionGranted(true)
         setLoading(true)
         loadWifiList()
@@ -61,12 +64,17 @@ export default ({ successFn, errorFn }) => {
   }, [])
 
   async function loadWifiList() {
+    const removeDuplicates = u.bind(u.createSet, 'SSID')
+    const addEnabledProp = u.assoc('enabled', false)
+    const sortByLevel = (a, b) => a.level < b.level
+
     WifiManager.loadWifiList()
-      .then(networks => networks.map(network => ({ ...network, enabled: false })))
+      .then(removeDuplicates)
+      .then(u.values)
+      .then(u.map(addEnabledProp))
+      .then(u.sort(sortByLevel))
       .then(setNetworks)
-      .catch((error) =>
-        errorFn({ error, message: 'Error while loading WiFi list' })
-      )
+      .catch((error) => errorFn({ error, message: 'Error while loading WiFi list' }))
   }
 
   function onWiFiSelected(index) {

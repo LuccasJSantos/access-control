@@ -2,21 +2,19 @@ import { Feather } from '@expo/vector-icons'
 import { Button, ScrollView, Spinner } from 'native-base'
 import { useState } from 'react'
 import { Text, View } from 'react-native'
-import * as Network from 'expo-network'
 import Cond, { CondItem } from '../Cond'
 import { useEffect } from 'react'
 import useConnection from '../../hooks/connection'
+import u from '../../utils'
 
 const ConnectionTest = ({ data, onCompleted, onError, onBack }) => {
-  const { connect, getMcuIp } = useConnection()
+  const { connected, connect, connectionCheck, getMcuIp } = useConnection()
   const [currentStep, setCurrentStep] = useState(0)
 
   const [steps, setSteps] = useState([
     { text: 'Conectando do NodeMCU', state: 'current' },
     { text: 'Buscando módulo NodeMCU na rede', state: 'unfinished' },
     { text: 'Testando comunicação', state: 'unfinished' },
-    { text: 'Testando leitura dos dados', state: 'unfinished' },
-    { text: 'Testando escrita dos dados', state: 'unfinished' },
   ]) // state :: unfinished | current | finished | error
 
   const setStepByIndex = (index, value) => {
@@ -31,7 +29,7 @@ const ConnectionTest = ({ data, onCompleted, onError, onBack }) => {
     setStepByIndex(currentStep, { state: 'finished' })
 
     if (currentStep === steps.length - 1) {
-      return setTimeout(onCompleted, 1500)
+      return setTimeout(onCompleted, 1000)
     }
 
     setCurrentStep((current) => current + 1)
@@ -43,56 +41,23 @@ const ConnectionTest = ({ data, onCompleted, onError, onBack }) => {
   }
 
   async function connectToMcu() {
+    return onStepCompleted()
     connect({ ssid: data.ssid, password: data.password })
       .then(onStepCompleted)
-      .catch((error) => {
-        setStepByIndex(currentStep, { state: 'error' })
-        setCurrentStep(0)
-        onError({ error: 'Could not connect to NodeMCU' })
-        console.log('error', error)
-      })
+      .catch(onStepError)
+    console.log('Connect to MCU')
   }
 
   async function findNodeMCU() {
-    // await Network.getIpAddressAsync()
-    //   .then(async (ip) => {
-    //     const [net] = ip.split(/\.(?=\d*$)/)
-
-    //     const lookup = await Promise.all(
-    //       new Array(10).fill().map(async (_, host) => {
-    //         const ip = `${net}.${host}`
-
-    //         return await fetch(`http://${ip}:3001/nodemcu-setup`)
-    //           .then((res) => (res.status === 200 ? ip : ''))
-    //           .catch(() => '')
-    //       })
-    //     )
-
-    //     const ips = lookup.find(Boolean) || []
-
-    //     return ips.length
-    //       ? Promise.resolve()
-    //       : Promise.reject(new Error('NodeMCU not found'))
-    //   })
-    //   .then(onStepCompleted)
-    //   .catch(onStepError)
-
+    return onStepCompleted()
+    getMcuIp().then(onStepCompleted).catch(onStepError)
     console.log('Find')
   }
 
   function testConnection() {
-    setTimeout(onStepCompleted, 1000)
+    return onStepCompleted()
+    connectionCheck().then(onStepCompleted).catch(onStepError)
     console.log('Test Connection')
-  }
-
-  function testReading() {
-    setTimeout(onStepCompleted, 1000)
-    console.log('Test Reading')
-  }
-
-  function testWriting() {
-    setTimeout(onStepCompleted, 1000)
-    console.log('Test Writing')
   }
 
   useEffect(() => {
@@ -107,12 +72,6 @@ const ConnectionTest = ({ data, onCompleted, onError, onBack }) => {
         break
       case 2:
         testConnection()
-        break
-      case 3:
-        testReading()
-        break
-      case 4:
-        testWriting()
         break
       default:
         break
@@ -143,21 +102,18 @@ const ConnectionTest = ({ data, onCompleted, onError, onBack }) => {
             </CondItem>
 
             <CondItem when="error" className="flex-row items-center gap-1">
-              <Feather name="check-circle" color="#E50014" />
+              <Feather name="x-circle" color="#E50014" />
               <Text className="text-error">{step.text}</Text>
             </CondItem>
           </Cond>
         </View>
       ))}
-      <Button
-        className="mt-5 bg-red-500"
-        onPress={() => {
-          getMcuIp().then(console.log)
-          // onBack
-        }}
-      >
-        Voltar
-      </Button>
+
+      {steps.find(u.propEq('state', 'error')) && (
+        <Button className="mt-5 bg-red-500" onPress={onBack}>
+          Voltar
+        </Button>
+      )}
     </ScrollView>
   )
 }

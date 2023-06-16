@@ -17,14 +17,8 @@ import { useEffect } from 'react'
 
 function Login() {
   const navigation = useNavigation()
-  const { connected } = useConnection()
+  const { connected, connectionInit } = useConnection()
   const [state, setState] = useState('idle') // idle | card
-
-  function checkState() {
-    if (state === 'card') {
-      console.log('Waiting for card connection')
-    }
-  }
 
   function onLogin() {
     setState('card')
@@ -36,18 +30,22 @@ function Login() {
   )
 
   useEffect(() => {
-    console.log({ connected })
-    if (connected === false) {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'connection-settings', params: { login: true } }],
+    connectionInit()
+      .then((connected) => {
+        if (!connected) {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'connection-settings', params: { login: true } }],
+          })
+        }
       })
-    }
-  }, [connected])
-
-  useEffect(() => {}, [state])
-
-  checkState()
+      .catch(() => {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'connection-settings', params: { login: true } }],
+        })
+      })
+  })
 
   return (
     <ImageBackground className="flex-1 relative" source={bg} resizeMode="cover">
