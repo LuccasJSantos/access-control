@@ -31,6 +31,7 @@ function Login() {
 
   useEffect(() => {
     connectionInit()
+      // Promise.resolve(true)
       .then((connected) => {
         if (!connected) {
           navigation.reset({

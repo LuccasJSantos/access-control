@@ -1,9 +1,8 @@
 import { Toast } from 'native-base'
 import {useEffect, useState} from 'react'
-import { PermissionsAndroid } from 'react-native'
 import WifiManager from 'react-native-wifi-reborn'
 import Geolocation from '@react-native-community/geolocation'
-import { requestPermission } from '../../utils/native'
+import { requestMultiple } from '../../utils/native'
 import u from '../../utils'
 
 export default ({ successFn, errorFn }) => {
@@ -20,6 +19,15 @@ export default ({ successFn, errorFn }) => {
     let timeout = null
 
     const fn = async () => {
+      const granted = await requestMultiple([
+        'android.permission.ACCESS_FINE_LOCATION',
+        'android.permission.NEARBY_WIFI_DEVICES',
+      ])
+
+      console.log({ granted })
+
+      if (!granted) { return }
+
       Geolocation.getCurrentPosition(
         () => Toast.closeAll(),
         () => {
@@ -28,7 +36,7 @@ export default ({ successFn, errorFn }) => {
               id: 'location-detector',
               backgroundColor: '#E50014',
               description: 'Habilite a localização do dispositivo.',
-              duration: 1000 * 60,
+              duration: 60000,
             })
           }
 
@@ -36,23 +44,9 @@ export default ({ successFn, errorFn }) => {
         }
       )
 
-      const accessFineLocation = await requestPermission({
-        permission: 'ACCESS_FINE_LOCATION',
-        title: 'Acesso à localização',
-        message: 'Este aplicativo solicita permissão para utilizar a localização do dispositivo para buscar redes Wi-Fi disponíveis.',
-      })
-
-      const accessNearbyDevices = await requestPermission({
-        permission: 'NEARBY_WIFI_DEVICES',
-        title: 'Acesso à dispositivos próximos',
-        message: 'Este aplicativo solicita permissão para encontrar dispositivos próximos que utilizam rede Wi-Fi',
-      })
-
-      if (accessFineLocation && accessNearbyDevices) {
-        setPermissionGranted(true)
-        setLoading(true)
-        loadWifiList()
-      }
+      setPermissionGranted(true)
+      setLoading(true)
+      loadWifiList()
     }
 
     fn()

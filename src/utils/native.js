@@ -1,12 +1,7 @@
 import { PermissionsAndroid } from 'react-native'
+import u from '../utils'
 
-export const requestPermission = ({ permission, title, message }) => 
-  PermissionsAndroid.request(
-    PermissionsAndroid.PERMISSIONS[permission],
-    {
-      title,
-      message,
-      buttonNegative: 'DENY',
-      buttonPositive: 'ALLOW',
-    }
-  ).then((granted) => granted === PermissionsAndroid.RESULTS.GRANTED)
+export const requestMultiple = permissions => 
+  PermissionsAndroid.requestMultiple(permissions)
+    .then(u.values)
+    .then(u.every(x => x === 'granted'))

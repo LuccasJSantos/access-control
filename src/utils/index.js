@@ -7,6 +7,8 @@ export default {
 
   bind: (fn, ...args) => fn.bind(null, ...args),
 
+  every: fn => array => array.every(fn),
+
   filter: fn => array => array.filter(fn),
 
   map: fn => array => array.map(fn),
@@ -17,5 +19,5 @@ export default {
 
   tap: fn => arg => { fn(...arg); return arg },
 
-  values: object => Object.values(object)
+  values: object => Object.values(object),
 }
