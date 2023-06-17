@@ -46,9 +46,9 @@ export const LoginProvider = ({ children }) => {
           return { valid: false, message: 'Sessão expirada' }
         }
 
-        setUserId(data.id)
-        setSessionId(data.session)
-        setUsername(data.name)
+        setUserId(data.userId)
+        setSessionId(data.sessionId)
+        setUsername(data.username)
 
         return { valid: true, message: 'Usuário autenticado!' }
       })
