@@ -1,10 +1,11 @@
-import { Avatar, Box, Divider, FlatList, Text } from 'native-base'
-import { SafeAreaView, StatusBar, TouchableOpacity, View } from 'react-native'
+import { Avatar, Text } from 'native-base'
+import { SafeAreaView, TouchableOpacity, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { DateTime } from 'luxon'
 
 import Section from '../components/Section'
 import ConnectionWidget from '../components/ConnectionWidget'
+import List from '../components/List'
 import { useConnection } from '../context/Connection'
 import { useLogin } from '../context/Login'
 
@@ -70,36 +71,25 @@ function Home () {
           link={{ title: 'Ver todos', screen: 'Access' }}
           className="mt-5"
         >
-          <Box rounded="lg" className="bg-white px-1.5">
-            <FlatList
-              data={data}
-              renderItem={({ item, index }) => {
-                return (
-                  <View>
-                    <View className="flex-row items-center justify-between w-full py-3 px-2">
-                      <View className="gap-0.5">
-                        <Text className="text-xs font-semibold">
-                          {item.title}
-                        </Text>
-                        <Text className="text-xs text-gray-400">
-                          {item.subtitle}
-                        </Text>
-                      </View>
+          <List items={data} render={(item, index) => (
+            <View>
+              <View className="flex-row items-center justify-between w-full py-3 px-2">
+                <View className="gap-0.5">
+                  <Text className="text-xs font-semibold">
+                    {item.title}
+                  </Text>
+                  <Text className="text-xs text-gray-400">
+                    {item.subtitle}
+                  </Text>
+                </View>
 
-                      <Text className="text-xs text-gray-400">
-                        {item.detail.toFormat('dd/MM/yy')} •{' '}
-                        {item.detail.toFormat('HH:mm')}
-                      </Text>
-                    </View>
-
-                    {index < data.length - 1 && (
-                      <Divider className="bg-gray-100" />
-                    )}
-                  </View>
-                )
-              }}
-            />
-          </Box>
+                <Text className="text-xs text-gray-400">
+                  {item.detail.toFormat('dd/MM/yy')} •{' '}
+                  {item.detail.toFormat('HH:mm')}
+                </Text>
+              </View>
+            </View>
+          )} />
 
           <View className="flex-row w-full justify-end pt-1">
             { !connected &&
@@ -115,36 +105,30 @@ function Home () {
           link={{ title: 'Ver todos', screen: 'Access' }}
           className="mt-5"
         >
-          <Box rounded="lg" className="bg-white px-1.5">
-            <FlatList
-              data={data}
-              renderItem={({ item, index }) => {
-                return (
-                  <View>
-                    <View className="flex-row items-center justify-between w-full py-3 px-2">
-                      <View className="gap-0.5">
-                        <Text className="text-xs font-semibold">
-                          {item.title}
-                        </Text>
-                        <Text className="text-xs text-gray-400">
-                          {item.subtitle}
-                        </Text>
-                      </View>
-
+          <List
+            items={data}
+            render={(item) => {
+              return (
+                <View>
+                  <View className="flex-row items-center justify-between w-full py-3 px-2">
+                    <View className="gap-0.5">
+                      <Text className="text-xs font-semibold">
+                        {item.title}
+                      </Text>
                       <Text className="text-xs text-gray-400">
-                        {item.detail.toFormat('dd/MM/yy')} •{' '}
-                        {item.detail.toFormat('HH:mm')}
+                        {item.subtitle}
                       </Text>
                     </View>
 
-                    {index < data.length - 1 && (
-                      <Divider className="bg-gray-100" />
-                    )}
+                    <Text className="text-xs text-gray-400">
+                      {item.detail.toFormat('dd/MM/yy')} •{' '}
+                      {item.detail.toFormat('HH:mm')}
+                    </Text>
                   </View>
-                )
-              }}
-            />
-          </Box>
+                </View>
+              )
+            }}
+          />
 
           <View className="flex-row w-full justify-end pt-1">
             { !connected &&
