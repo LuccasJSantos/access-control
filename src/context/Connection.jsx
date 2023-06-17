@@ -1,21 +1,21 @@
 import * as Network from 'expo-network'
-import WifiManager from 'react-native-wifi-reborn'
-import { useState } from 'react'
-import storage from '../utils/storage'
-import { DateTime, Interval } from 'luxon'
-
-import { 
-  APP_NODEMCU_CFG_FILENAME,
-  APP_NODEMCU_SSID,
-  APP_NODEMCU_PASS,
-  APP_NODEMCU_HOST,
-  APP_NODEMCU_CONNECTION_EXPIRE,
-} from '@env'
 import axios from 'axios'
+import WifiManager from 'react-native-wifi-reborn'
+import { DateTime, Interval } from 'luxon'
+import { useState, createContext, useContext } from 'react'
+import {
+  APP_NODEMCU_CFG_FILENAME,
+  APP_NODEMCU_HOST,
+  APP_NODEMCU_PASS,
+  APP_NODEMCU_SSID
+} from '@env'
+import storage from '../utils/storage'
 
-const useConnection = () => {
-  const [ connected, setConnected ] = useState(false)
-  const [ ip, setIp ] = useState('')
+const ConnectionContext = createContext({})
+
+export const ConnectionProvider = ({ children }) => {
+  const [connected, setConnected] = useState(false)
+  const [ip, setIp] = useState('')
 
   const reset = () => {
     setConnected(false)
@@ -23,7 +23,8 @@ const useConnection = () => {
   }
 
   const connectionCheck = () => {
-    return axios.get(`${ip}/dooraccess`)
+    // return axios.get(`${ip}/dooraccess`)
+    return Promise.resolve({ status: 200 })
       .then((res) => (res.status === 200))
       .then((conn) => {
         if (!conn) {
@@ -34,8 +35,9 @@ const useConnection = () => {
         setConnected(true)
 
         const expireAt = DateTime.now().plus({ days: 7 })
+
         storage.write(APP_NODEMCU_CFG_FILENAME, { ip, expireAt })
-        
+
         return true
       })
   }
@@ -51,7 +53,8 @@ const useConnection = () => {
           return false
         }
 
-        return axios.get(`http://${data.ip}/dooraccess`)
+        return Promise.resolve(true)
+        // return axios.get(`http://${data.ip}/dooraccess`)
           .then(res => {
             if (!res.status === 200) { return false }
 
@@ -93,7 +96,7 @@ const useConnection = () => {
 
   const connect = async ({ ssid, password }) => {
     return WifiManager.connectToProtectedSSID(APP_NODEMCU_SSID, APP_NODEMCU_PASS, false)
-      .then(() => 
+      .then(() =>
         axios.get(`http://${APP_NODEMCU_HOST}/ssid?ssid=${ssid}&pass=${password}`))
       .then(res => {
         if (res.status !== 200) {
@@ -102,7 +105,12 @@ const useConnection = () => {
       })
   }
 
-  return { connected, ip, setIp, getMcuIp, connectionInit, connectionCheck, connect }
+  return (
+    <ConnectionContext.Provider
+      value={{ connected, ip, setIp, getMcuIp, connectionInit, connectionCheck, connect }}>
+      {children}
+    </ConnectionContext.Provider>
+  )
 }
 
-export default useConnection
+export const useConnection = () => useContext(ConnectionContext)

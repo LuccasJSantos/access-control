@@ -1,5 +1,5 @@
 import { Toast } from 'native-base'
-import {useEffect, useState} from 'react'
+import { useEffect, useState } from 'react'
 import WifiManager from 'react-native-wifi-reborn'
 import Geolocation from '@react-native-community/geolocation'
 import { requestMultiple } from '../../utils/native'
@@ -21,10 +21,8 @@ export default ({ successFn, errorFn }) => {
     const fn = async () => {
       const granted = await requestMultiple([
         'android.permission.ACCESS_FINE_LOCATION',
-        'android.permission.NEARBY_WIFI_DEVICES',
+        'android.permission.NEARBY_WIFI_DEVICES'
       ])
-
-      console.log({ granted })
 
       if (!granted) { return }
 
@@ -36,7 +34,7 @@ export default ({ successFn, errorFn }) => {
               id: 'location-detector',
               backgroundColor: '#E50014',
               description: 'Habilite a localização do dispositivo.',
-              duration: 60000,
+              duration: 60000
             })
           }
 
@@ -57,7 +55,7 @@ export default ({ successFn, errorFn }) => {
     }
   }, [])
 
-  async function loadWifiList() {
+  async function loadWifiList () {
     const removeDuplicates = u.bind(u.createSet, 'SSID')
     const addEnabledProp = u.assoc('enabled', false)
     const sortByLevel = (a, b) => a.level < b.level
@@ -71,9 +69,9 @@ export default ({ successFn, errorFn }) => {
       .catch((error) => errorFn({ error, message: 'Error while loading WiFi list' }))
   }
 
-  function onWiFiSelected(index) {
+  function onWiFiSelected (index) {
     const networksDisabled = networks.map(net => ({ ...net, enabled: false }))
-    const networksUpdated = [...networksDisabled.slice(0, index), { ...networksDisabled[index], enabled: true }, ...networksDisabled.slice(index + 1) ]
+    const networksUpdated = [...networksDisabled.slice(0, index), { ...networksDisabled[index], enabled: true }, ...networksDisabled.slice(index + 1)]
 
     setNetworks(networksUpdated)
     setSelectedWiFi(networksUpdated[index])
@@ -90,15 +88,15 @@ export default ({ successFn, errorFn }) => {
   }
 
   function onConnectPress ({ ssid, password }) {
-    successFn({ ssid: ssid, password  })
+    successFn({ ssid, password })
   }
 
-  return { 
-    permissionGranted, 
-    loading, 
-    networks, 
+  return {
+    permissionGranted,
+    loading,
+    networks,
     selectedWiFi,
     onConnectPress,
-    onWiFiSelected,
+    onWiFiSelected
   }
 }

@@ -3,16 +3,16 @@ import { StatusBar, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useEffect, useState } from 'react'
 import StepIndicator from 'react-native-step-indicator'
+import { Feather } from '@expo/vector-icons'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import WiFiList from '../components/WiFiList'
 import Cond, { CondItem } from '../components/Cond'
 import ConnectionTest from '../components/ConnectionTest'
 import ConnectionWidget from '../components/ConnectionWidget'
-import { Feather } from '@expo/vector-icons'
-import { useNavigation, useRoute } from '@react-navigation/native'
-import useConnection from '../hooks/connection'
+import { useConnection } from '../context/Connection'
 import u from '../utils'
 
-function ConnectionSettings() {
+function ConnectionSettings () {
   const { connected } = useConnection()
   const [ssid, setSsid] = useState('')
   const [password, setPassword] = useState('')
@@ -30,54 +30,53 @@ function ConnectionSettings() {
     steps: [
       { text: 'Selecione a rede WiFi', state: 'current' },
       { text: 'Testando conexão', state: 'unfinished' },
-      { text: '', state: 'unfinished' },
-    ],
+      { text: '', state: 'unfinished' }
+    ]
   })
 
   useEffect(() => {
     if (connected && route.params?.login) {
       navigation.reset({ index: 0, routes: [{ name: 'login' }] })
-      return
     }
   }, [connected])
 
-  function setStepByIndex(index, value) {
+  function setStepByIndex (index, value) {
     return {
       steps: [
         ...guide.steps.slice(0, index),
         { ...guide.steps[index], ...value },
-        ...guide.steps.slice(index + 1),
-      ],
+        ...guide.steps.slice(index + 1)
+      ]
     }
   }
 
-  function reset() {
+  function reset () {
     const [first, ...steps] = guide.steps.map(u.assoc('state', 'unfinished'))
     const firstStep = u.assoc('state', 'current')(first)
 
     setGuide((current) => ({
       ...current,
       currentStep: 0,
-      steps: [firstStep, ...steps],
+      steps: [firstStep, ...steps]
     }))
   }
 
-  function onStepCompleted(response) {
+  function onStepCompleted (response) {
     if (response?.error) {
       return setGuide({
         ...guide,
-        ...setStepByIndex(guide.currentStep, { state: 'error' }),
+        ...setStepByIndex(guide.currentStep, { state: 'error' })
       })
     }
 
     return setGuide({
       ...guide,
       currentStep: guide.currentStep + 1,
-      ...setStepByIndex(guide.currentStep, { state: 'finished' }),
+      ...setStepByIndex(guide.currentStep, { state: 'finished' })
     })
   }
 
-  function renderStepIndicator({ position, stepStatus }) {
+  function renderStepIndicator ({ position, stepStatus }) {
     const style =
       guide.steps[position].state === 'error'
         ? 'text-error'
@@ -94,7 +93,7 @@ function ConnectionSettings() {
     )
   }
 
-  function renderLabel({ label, position, stepStatus }) {
+  function renderLabel ({ label, position, stepStatus }) {
     const style =
       guide.steps[position].state === 'error'
         ? 'text-error'
@@ -109,7 +108,7 @@ function ConnectionSettings() {
     )
   }
 
-  function getCurrentStrokeColor() {
+  function getCurrentStrokeColor () {
     const state = guide.steps[guide.currentStep].state
     return state === 'error'
       ? '#E50014'
@@ -170,14 +169,14 @@ function ConnectionSettings() {
                     stepIndicatorLabelCurrentColor: '#4CAF50',
                     stepIndicatorUnFinishedColor: '#ddd',
                     stepStrokeUnFinishedColor: '#ddd',
-                    labelColor: '#ff0',
+                    labelColor: '#ff0'
                   }}
                   stepCount={3}
                   currentPosition={guide.currentStep}
                   labels={[
                     'Configuração Wi-Fi',
                     'Teste de Conexão',
-                    'Configuração Concluída',
+                    'Configuração Concluída'
                   ]}
                   renderStepIndicator={renderStepIndicator}
                   renderLabel={renderLabel}
@@ -225,18 +224,18 @@ function ConnectionSettings() {
                             borderRadius="full"
                             variant="solid"
                             _pressed={{
-                              opacity: 80,
+                              opacity: 80
                             }}
                             _icon={{
                               as: Feather,
                               name: 'check',
-                              size: 6,
+                              size: 6
                             }}
                             onPress={() => {
                               if (route.params?.login) {
                                 navigation.reset({
                                   index: 0,
-                                  routes: [{ name: 'login' }],
+                                  routes: [{ name: 'login' }]
                                 })
                               } else {
                                 navigation.goBack()

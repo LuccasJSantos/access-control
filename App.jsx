@@ -6,25 +6,28 @@ import { NativeBaseProvider } from 'native-base'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
+import { ConnectionProvider } from './src/context/Connection'
 import Login from './src/screens/Login'
 import Home from './src/screens/Home'
 import ConnectionSettings from './src/screens/ConnectionSettings'
 
 const Stack = createNativeStackNavigator()
 
-export default function App() {
+export default function App () {
   return (
     <NavigationContainer>
       <NativeBaseProvider>
-        <StatusBar hidden height="auto" />
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="login" component={Login} />
-          <Stack.Screen
-            name="connection-settings"
-            component={ConnectionSettings}
-          />
-          <Stack.Screen name="home" component={Home} />
-        </Stack.Navigator>
+        <ConnectionProvider>
+          <StatusBar hidden height="auto" />
+          <Stack.Navigator
+            initialRouteName="login"
+            screenOptions={{ headerShown: false }}
+          >
+            <Stack.Screen name="login" component={Login} />
+            <Stack.Screen name="home" component={Home} />
+            <Stack.Screen name="connection-settings" component={ConnectionSettings} />
+          </Stack.Navigator>
+        </ConnectionProvider>
       </NativeBaseProvider>
     </NavigationContainer>
   )

@@ -1,26 +1,25 @@
-import { useState } from 'react'
+import { Button, Spinner } from 'native-base'
+import { useEffect, useState } from 'react'
+import { useNavigation } from '@react-navigation/native'
 import {
   Image,
   ImageBackground,
   SafeAreaView,
   StatusBar,
   Text,
-  View,
+  View
 } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
-import { Button, Spinner } from 'native-base'
+import Cond, { CondItem } from '../components/Cond'
 import bg from '../../assets/login-bg.png'
 import logo from '../../assets/logo.png'
-import Cond, { CondItem } from '../components/Cond'
-import useConnection from '../hooks/connection'
-import { useEffect } from 'react'
+import { useConnection } from '../context/Connection'
 
-function Login() {
+function Login () {
   const navigation = useNavigation()
   const { connected, connectionInit } = useConnection()
   const [state, setState] = useState('idle') // idle | card
 
-  function onLogin() {
+  function onLogin () {
     setState('card')
     // navigation.reset({ index: 0, routes: [{ name: 'home' }] })
   }
@@ -30,23 +29,25 @@ function Login() {
   )
 
   useEffect(() => {
+    if (connected) return
+
     connectionInit()
       // Promise.resolve(true)
       .then((connected) => {
         if (!connected) {
           navigation.reset({
             index: 0,
-            routes: [{ name: 'connection-settings', params: { login: true } }],
+            routes: [{ name: 'connection-settings', params: { login: true } }]
           })
         }
       })
       .catch(() => {
         navigation.reset({
           index: 0,
-          routes: [{ name: 'connection-settings', params: { login: true } }],
+          routes: [{ name: 'connection-settings', params: { login: true } }]
         })
       })
-  })
+  }, [])
 
   return (
     <ImageBackground className="flex-1 relative" source={bg} resizeMode="cover">
@@ -63,7 +64,7 @@ function Login() {
           resizeMode="contain"
           style={{
             width: 236,
-            height: 114,
+            height: 114
           }}
         />
 
