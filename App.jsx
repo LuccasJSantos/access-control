@@ -20,7 +20,7 @@ export default function App () {
       <NativeBaseProvider>
         <LoginProvider>
           <ConnectionProvider>
-            <StatusBar height="auto" />
+            <StatusBar hidden height="auto" />
             <Stack.Navigator
               initialRouteName="login"
               screenOptions={{ headerShown: false }}

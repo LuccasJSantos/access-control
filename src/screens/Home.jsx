@@ -1,7 +1,6 @@
 import { Avatar, Box, Divider, FlatList, Text } from 'native-base'
 import { SafeAreaView, StatusBar, TouchableOpacity, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
-import { Feather } from '@expo/vector-icons'
 import { DateTime } from 'luxon'
 
 import Section from '../components/Section'
@@ -34,7 +33,7 @@ function Home () {
       locations={[0, 0.05, 1]}
       className="absolute -z-10 top-0 left-0 w-full h-full py-3 px-5"
     >
-      <SafeAreaView style={{ marginTop: StatusBar.currentHeight }}>
+      <SafeAreaView>
         <View className="flex-row items-center justify-between w-full">
           <Text className="text-xl font-bold">
             Bom dia,
