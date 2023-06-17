@@ -1,4 +1,4 @@
-import { Button, Spinner } from 'native-base'
+import { Button, Spinner, Toast } from 'native-base'
 import { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import {
@@ -13,20 +13,42 @@ import Cond, { CondItem } from '../components/Cond'
 import bg from '../../assets/login-bg.png'
 import logo from '../../assets/logo.png'
 import { useConnection } from '../context/Connection'
+import { useLogin } from '../context/Login'
 
 function Login () {
   const navigation = useNavigation()
   const { connected, connectionInit } = useConnection()
+  const { login, requestAuthentication } = useLogin()
   const [state, setState] = useState('idle') // idle | card
 
   function onLogin () {
-    // setState('card')
-    navigation.reset({ index: 0, routes: [{ name: 'home' }] })
+    login()
+      .then(({ valid, message }) => {
+        if (valid) { return }
+
+        throw new Error(message)
+      })
+      .then(() => navigation.reset({ index: 0, routes: [{ name: 'home' }] }))
+      .catch((error) => {
+        setTimeout(() => setState('card'), 2000)
+        Toast.show({ description: error.message, duration: 2000 })
+      })
   }
 
   const LoginText = ({ text }) => (
     <Text className="font-semibold text-center text-white text-xl">{text}</Text>
   )
+
+  useEffect(() => {
+    if (state === 'card') {
+      requestAuthentication()
+        .then(() => navigation.reset({ index: 0, routes: [{ name: 'home' }] }))
+        .catch(error => {
+          setTimeout(() => setState('idle'), 2000)
+          Toast.show({ description: error.message, duration: 2000 })
+        })
+    }
+  }, [state])
 
   useEffect(() => {
     if (connected) return
