@@ -6,9 +6,15 @@ import { DateTime } from 'luxon'
 import Section from '../components/Section'
 import ConnectionWidget from '../components/ConnectionWidget'
 import { useConnection } from '../context/Connection'
+import { useLogin } from '../context/Login'
 
 function Home () {
   const { connected } = useConnection()
+  const { username } = useLogin()
+  const [firstname] = username.split(' ')
+  const [lastname] = username.split(' ').slice(-1)
+  const avatarText = `${firstname[0]}${lastname[0]}`
+
   const data = [
     {
       title: 'Mário Marques',
@@ -37,10 +43,10 @@ function Home () {
         <View className="flex-row items-center justify-between w-full">
           <Text className="text-xl font-bold">
             Bom dia,
-            <Text className="ml-1 font-normal text-gray-400"> Luccas</Text>
+            <Text className="ml-1 font-normal text-gray-400"> {firstname}</Text>
           </Text>
 
-          <Avatar className="bg-accent">LS</Avatar>
+          <Avatar className="bg-accent">{avatarText}</Avatar>
         </View>
         <Section
           title="Conexão"
