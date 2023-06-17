@@ -2,7 +2,7 @@ import axios from 'axios'
 import { DateTime, Interval } from 'luxon'
 import { useState, createContext, useContext } from 'react'
 import {
-  APP_SESSION
+  APP_SESSION_FILENAME
 } from '@env'
 import storage from '../utils/storage'
 import { useConnection } from './Connection'
@@ -25,7 +25,7 @@ export const LoginProvider = ({ children }) => {
         setUserId(id)
         setUsername(username)
 
-        return storage.write(APP_SESSION, {
+        return storage.write(APP_SESSION_FILENAME, {
           username,
           sessionId: session,
           userId: id,
@@ -38,7 +38,7 @@ export const LoginProvider = ({ children }) => {
   }
 
   const login = async () => {
-    return storage.read(APP_SESSION)
+    return storage.read(APP_SESSION_FILENAME)
       .then((data) => {
         const interval = Interval.fromDateTimes(new Date(), new Date(data.expireAt))
 
