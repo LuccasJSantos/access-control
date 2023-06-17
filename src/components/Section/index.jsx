@@ -9,6 +9,7 @@ const Section = ({ children, className, link, title }) => {
     <View className={className}>
       <TouchableOpacity
         className="flex-row w-full items-center justify-between"
+        disabled={!link?.title}
         onPress={() => navigation.navigate(link.screen)}
       >
         <Text className="text-sm text-gray-500 font-medium">{title}</Text>
@@ -24,7 +25,7 @@ const Section = ({ children, className, link, title }) => {
         )}
       </TouchableOpacity>
 
-      <View className="mt-3">{children}</View>
+      <View className="mt-2">{children}</View>
     </View>
   )
 }

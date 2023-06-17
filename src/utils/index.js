@@ -1,7 +1,7 @@
 export default {
   assoc: (key, value) => object => Object.assign({}, object, { [key]: value }),
 
-  createSet: (prop, array) => 
+  createSet: (prop, array) =>
     array.reduce((acc, item) =>
       Object.assign(acc, { [item[prop]]: item }), {}),
 
@@ -19,5 +19,5 @@ export default {
 
   tap: fn => arg => { fn(...arg); return arg },
 
-  values: object => Object.values(object),
+  values: object => Object.values(object)
 }

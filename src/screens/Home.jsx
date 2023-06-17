@@ -5,24 +5,27 @@ import { Feather } from '@expo/vector-icons'
 import { DateTime } from 'luxon'
 
 import Section from '../components/Section'
+import ConnectionWidget from '../components/ConnectionWidget'
+import { useConnection } from '../context/Connection'
 
-function Home() {
+function Home () {
+  const { connected } = useConnection()
   const data = [
     {
       title: 'Mário Marques',
       subtitle: 'Professor',
-      detail: DateTime.now(),
+      detail: DateTime.now()
     },
     {
       title: 'Geovanni Adan',
       subtitle: 'Técnico de Informática',
-      detail: DateTime.now(),
+      detail: DateTime.now()
     },
     {
       title: 'Mário Marques',
       subtitle: 'Professor',
-      detail: DateTime.now(),
-    },
+      detail: DateTime.now()
+    }
   ]
 
   return (
@@ -42,18 +45,19 @@ function Home() {
         </View>
         <Section
           title="Conexão"
-          link={{ title: 'Configurar', screen: 'connection-settings' }}
+          link={!connected && { title: 'Configurar', screen: 'connection-settings' }}
           className="mt-5"
         >
           <View className="flex-row items-center gap-1">
-            <Text className="text-red-500 text-xs">Offline</Text>
-            <Feather name="wifi-off" color="#ef4444" />
+            <ConnectionWidget />
           </View>
-          <TouchableOpacity className="mt-0.5">
-            <Text className="text-xs text-gray-400">
-              Clique aqui para iniciar configuração
-            </Text>
-          </TouchableOpacity>
+          { !connected &&
+            <TouchableOpacity className="mt-0.5">
+              <Text className="text-xs text-gray-400">
+                Clique aqui para iniciar configuração
+              </Text>
+            </TouchableOpacity>
+          }
         </Section>
 
         <Section
@@ -93,9 +97,11 @@ function Home() {
           </Box>
 
           <View className="flex-row w-full justify-end pt-1">
-            <Text className="flex text-gray-500 text-xs text-right">
-              Conecte-se para atualizar a lista
-            </Text>
+            { !connected &&
+              <Text className="flex text-gray-500 text-xs text-right">
+                Conecte-se para atualizar a lista
+              </Text>
+            }
           </View>
         </Section>
 
@@ -136,9 +142,11 @@ function Home() {
           </Box>
 
           <View className="flex-row w-full justify-end pt-1">
-            <Text className="flex text-gray-500 text-xs text-right">
-              Conecte-se para atualizar a lista
-            </Text>
+            { !connected &&
+              <Text className="flex text-gray-500 text-xs text-right">
+                Conecte-se para atualizar a lista
+              </Text>
+            }
           </View>
         </Section>
       </SafeAreaView>

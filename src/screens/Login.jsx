@@ -20,8 +20,8 @@ function Login () {
   const [state, setState] = useState('idle') // idle | card
 
   function onLogin () {
-    setState('card')
-    // navigation.reset({ index: 0, routes: [{ name: 'home' }] })
+    // setState('card')
+    navigation.reset({ index: 0, routes: [{ name: 'home' }] })
   }
 
   const LoginText = ({ text }) => (

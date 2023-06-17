@@ -1,9 +1,9 @@
 import { Button, Center, Input, Modal, Spinner } from 'native-base'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { Feather } from '@expo/vector-icons'
+import { useRef } from 'react'
 import Cond, { CondItem } from '../Cond'
 import useState from './state'
-import { useRef } from 'react'
 
 const WiFiList = ({ className, onError, onConnect }) => {
   const {
@@ -12,7 +12,7 @@ const WiFiList = ({ className, onError, onConnect }) => {
     networks,
     selectedWiFi,
     onWiFiSelected,
-    onConnectPress,
+    onConnectPress
   } = useState({ errorFn: onError, successFn: onConnect })
 
   const refWifiPass = useRef(null)
@@ -63,7 +63,7 @@ const WiFiList = ({ className, onError, onConnect }) => {
           onPress={() => {
             onConnectPress({
               ssid: selectedWiFi.SSID,
-              password: refWifiPass.current.value,
+              password: refWifiPass.current.value
             })
           }}
           className="mt-4 bg-green-500"

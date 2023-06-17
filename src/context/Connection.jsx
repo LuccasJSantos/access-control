@@ -53,7 +53,7 @@ export const ConnectionProvider = ({ children }) => {
           return false
         }
 
-        return Promise.resolve(true)
+        return Promise.resolve({ status: 200 })
         // return axios.get(`http://${data.ip}/dooraccess`)
           .then(res => {
             if (!res.status === 200) { return false }
