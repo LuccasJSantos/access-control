@@ -109,7 +109,7 @@ function Home () {
               {/* Users section */}
               <Section
                 title={`Usuários (${users.length})`}
-                link={users.slice(4).length && { title: 'Ver todos', screen: 'Users' }}
+                link={users.slice(4).length && { title: 'Ver todos', screen: 'users' }}
                 className="mt-5"
               >
                 <List
