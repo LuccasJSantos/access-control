@@ -47,6 +47,13 @@ Luccas Josival da Silva Santos,Aluno,2023-07-01T19:23:00Z`)
     }
 
     return requestAccessData()
+      .catch(error => {
+        if (data) {
+          const dataFormatted = data.map(item => Object.assign({}, item, { date: DateTime.fromISO(item.date) }))
+          setAccess(dataFormatted)
+          throw new Error(`${error.message}. Utilizando dados salvos`)
+        }
+      })
   }
 
   return (
