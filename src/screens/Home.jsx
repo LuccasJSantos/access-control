@@ -79,7 +79,7 @@ function Home () {
               {/* Recent access section */}
               <Section
                 title={`Acessos recentes (${access.length})`}
-                link={access.slice(4).length && { title: 'Ver todos', screen: 'Access' }}
+                link={access.slice(4).length && { title: 'Ver todos', screen: 'access' }}
                 className="mt-5"
               >
                 <List

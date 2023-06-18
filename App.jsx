@@ -9,6 +9,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { ConnectionProvider } from './src/context/Connection'
 import Login from './src/screens/Login'
 import Home from './src/screens/Home'
+import Access from './src/screens/Access'
 import ConnectionSettings from './src/screens/ConnectionSettings'
 import { LoginProvider } from './src/context/Login'
 import { AccessProvider } from './src/context/Access'
@@ -31,6 +32,7 @@ export default function App () {
                 >
                   <Stack.Screen name="login" component={Login} />
                   <Stack.Screen name="home" component={Home} />
+                  <Stack.Screen name="access" component={Access} />
                   <Stack.Screen name="connection-settings" component={ConnectionSettings} />
                 </Stack.Navigator>
               </UsersProvider>

@@ -12,6 +12,7 @@ const List = ({ items, render, footerText }) => {
       !items.length
         ? <NoData />
         : <FlatList
+          scrollEnabled
           data={items}
           renderItem={({ item, index }) => {
             return (
