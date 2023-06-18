@@ -10,11 +10,13 @@ import List from '../components/List'
 import { useConnection } from '../context/Connection'
 import { useLogin } from '../context/Login'
 import { useAccess } from '../context/Access'
+import { useUsers } from '../context/Users'
 
 function Home () {
   const { connected } = useConnection()
   const { username } = useLogin()
-  const { access, init } = useAccess()
+  const { access, init: accessInit } = useAccess()
+  const { users, init: usersInit } = useUsers()
   const navigation = useNavigation()
 
   const [firstname] = username.split(' ')
@@ -22,7 +24,8 @@ function Home () {
   const avatarText = `${firstname[0]}${lastname[0]}`
 
   useEffect(() => {
-    init().catch(error => Toast.show({ description: error.message, duration: 2000 }))
+    accessInit().catch(error => Toast.show({ description: error.message, duration: 3000 }))
+    usersInit().catch(error => Toast.show({ description: error.message, duration: 3000 }))
   }, [])
 
   return (
@@ -92,12 +95,12 @@ function Home () {
 
         {/* Users section */}
         <Section
-          title={`Usuários (${access.length})`}
-          link={access.slice(4).length && { title: 'Ver todos', screen: 'Users' }}
+          title={`Usuários (${users.length})`}
+          link={users.slice(4).length && { title: 'Ver todos', screen: 'Users' }}
           className="mt-5"
         >
           <List
-            items={access.slice(0, 4)}
+            items={users.slice(0, 4)}
             footerText={!connected && 'Conecte-se para atualizar a lista'}
             render={item => {
               return (

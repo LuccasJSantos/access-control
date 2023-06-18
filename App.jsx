@@ -12,6 +12,7 @@ import Home from './src/screens/Home'
 import ConnectionSettings from './src/screens/ConnectionSettings'
 import { LoginProvider } from './src/context/Login'
 import { AccessProvider } from './src/context/Access'
+import { UsersProvider } from './src/context/Users'
 
 const Stack = createNativeStackNavigator()
 
@@ -22,15 +23,17 @@ export default function App () {
         <LoginProvider>
           <ConnectionProvider>
             <AccessProvider>
-              <StatusBar hidden height="auto" />
-              <Stack.Navigator
-                initialRouteName="login"
-                screenOptions={{ headerShown: false }}
-              >
-                <Stack.Screen name="login" component={Login} />
-                <Stack.Screen name="home" component={Home} />
-                <Stack.Screen name="connection-settings" component={ConnectionSettings} />
-              </Stack.Navigator>
+              <UsersProvider>
+                <StatusBar hidden height="auto" />
+                <Stack.Navigator
+                  initialRouteName="login"
+                  screenOptions={{ headerShown: false }}
+                >
+                  <Stack.Screen name="login" component={Login} />
+                  <Stack.Screen name="home" component={Home} />
+                  <Stack.Screen name="connection-settings" component={ConnectionSettings} />
+                </Stack.Navigator>
+              </UsersProvider>
             </AccessProvider>
           </ConnectionProvider>
         </LoginProvider>
