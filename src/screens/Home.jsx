@@ -26,10 +26,16 @@ function Home () {
 
   function loadData () {
     setRefreshing(true)
-    Promise.all([
+    return Promise.all([
       accessInit().catch(error => Toast.show({ description: error.message, duration: 3000 })),
       usersInit().catch(error => Toast.show({ description: error.message, duration: 3000 }))
-    ]).finally(() => setRefreshing(false))
+    ])
+      .finally(() => setRefreshing(false))
+  }
+
+  function onRefreshData () {
+    loadData()
+      .then(() => Toast.show({ description: 'Dados atualizados', duration: 3000 }))
   }
 
   useEffect(() => {
@@ -45,7 +51,7 @@ function Home () {
       <SafeAreaView>
         <FlatList
           data={['']}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={loadData} />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefreshData} />}
           renderItem={() =>
             <View>
               {/* Header */}
