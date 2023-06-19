@@ -43,7 +43,7 @@ export const ConnectionProvider = ({ children }) => {
   }
 
   const connectionInit = async () => {
-    return storage.read(APP_NODEMCU_CFG_FILENAME)
+    const res = await storage.read(APP_NODEMCU_CFG_FILENAME)
       .then(async (data = {}) => {
         const interval = Interval.fromDateTimes(new Date(), new Date(data.expireAt))
 
@@ -64,7 +64,23 @@ export const ConnectionProvider = ({ children }) => {
             return true
           })
           .catch(() => false)
-      })
+      }).catch(() => false)
+
+      if (!res) {
+        const ip = await getMcuIp().catch(() => false)
+
+        if (!ip) {
+          reset()
+          return false
+        }
+
+        setConnected(true)
+        setIp(ip)
+
+        return true
+      }
+
+      return true
   }
 
   const getMcuIp = async () => {
@@ -74,11 +90,15 @@ export const ConnectionProvider = ({ children }) => {
 
         const ip = await Promise.race(
           new Array(256).fill().map((_, host) => {
-            const ip = `${net}.${host + 1}`
 
             return new Promise((resolve, reject) => {
+              const ip = `${net}.${host + 1}`
               return axios.get(`http://${ip}/dooraccess`)
-                .then(() => resolve(ip))
+                .then((res) => {
+                  if (res.status === 200 && res.data === 'NodeMCU Door Access API') {
+                    return resolve(ip)
+                  }
+                })
                 .catch(() => setTimeout(reject, 5000))
             })
           })
@@ -90,7 +110,7 @@ export const ConnectionProvider = ({ children }) => {
 
         setIp(ip)
 
-        return Promise.resolve()
+        return Promise.resolve(ip)
       })
   }
 
