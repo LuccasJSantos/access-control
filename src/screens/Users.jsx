@@ -17,7 +17,7 @@ import formatter from '../utils/formatter'
 
 function Home () {
   const { connected } = useConnection()
-  const { users, init: usersInit, awaitAdminCard, awaitUserCard, sendForm } = useUsers()
+  const { users, init: usersInit, awaitUserCard, sendForm, deleteUser } = useUsers()
 
   const [refreshing, setRefreshing] = useState(false)
   const [filterFn, setFilterFn] = useState(() => () => true)
@@ -91,11 +91,17 @@ function Home () {
       .catch(error => Toast.show({ description: error.message, duration: 3000 }))
   }
 
+  async function onDeleteUser (user) {
+    deleteUser(user.id)
+      .then(() => Toast.show({ description: 'Usuário deletado com sucesso', duration: 3000, backgroundColor: '#4CAF50' }))
+      .catch(error => Toast.show({ description: error.message, duration: 3000 }))
+  }
+
   useEffect(() => {
     if (userModal) {
       switch (modalState) {
         case 'user': 
-          awaitUserCard()
+          awaitUserCard(form)
             .then(card => setForm(current => Object.assign({}, current, { card })))
             .then(resetForm)
             .then(() => Toast.show({ description: 'Usuário cadastrado com sucesso', duration: 3000, backgroundColor: '#4CAF50' }))
@@ -179,7 +185,7 @@ function Home () {
 
                           <TouchableOpacity
                             className="p-1.5"
-                            onPress={() => console.log('delete user', item.name)}
+                            onPress={() => onDeleteUser(item)}
                           >
                             <Feather
                               name="x-circle"

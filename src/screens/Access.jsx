@@ -11,6 +11,8 @@ import { useConnection } from '../context/Connection'
 import { useAccess } from '../context/Access'
 import Cond, { CondItem } from '../components/Cond'
 
+import formatter from '../utils/formatter'
+
 function Home () {
   const { connected } = useConnection()
   const { access, init: accessInit } = useAccess()
@@ -87,6 +89,7 @@ function Home () {
                           <View className="gap-1.5">
                             <Skeleton className="h-3 w-44 rounded-full" />
                             <Skeleton className="h-3 w-20 rounded-full" />
+                            <Skeleton className="h-3 w-28 rounded-full" />
                           </View>
 
                           <Skeleton className="h-3 w-24 rounded-full" />
@@ -97,14 +100,27 @@ function Home () {
                               {item.name}
                             </Text>
                             <Text className="text-xs text-gray-400">
-                              {item.role}
+                              {formatter.role(item.role)}
+                            </Text>
+                            <Text className="text-xs text-gray-400">
+                              {formatter.action(item.action)}
                             </Text>
                           </View>
 
-                          <Text className="text-xs text-gray-400">
-                            {item.date.toFormat('dd/MM/yy')} •{' '}
-                            {item.date.toFormat('HH:mm')}
-                          </Text>
+                          <View className="items-end">
+                            <View className="flex-row items-center gap-1">
+                              <View  className="opacity-30">
+                                <Feather size={10} name={formatter.actionIcon(item.action)} />
+                              </View>
+                              <Text className="text-xs text-gray-400">
+                                {formatter.action(item.action)}
+                              </Text>
+                            </View>
+                            <Text className="text-xs text-gray-400">
+                              {item.date.toFormat('dd/MM/yy')} •{' '}
+                              {item.date.toFormat('HH:mm')}
+                            </Text>
+                          </View>
                         </CondItem>
                       </Cond>
                     </View>

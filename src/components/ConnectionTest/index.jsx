@@ -41,16 +41,16 @@ const ConnectionTest = ({ data, onCompleted, onError, onBack }) => {
 
   async function connectToMcu () {
     console.log('Connect to MCU')
-    return onStepCompleted()
-    // connect({ ssid: data.ssid, password: data.password })
-    //   .then(onStepCompleted)
-    //   .catch(onStepError)
+    // return onStepCompleted()
+    connect({ ssid: data.ssid, password: data.password })
+      .then(onStepCompleted)
+      .catch(onStepError)
   }
 
   async function findNodeMCU () {
     console.log('Find')
-    return onStepCompleted()
-    // getMcuIp().then(onStepCompleted).catch(onStepError)
+    // return onStepCompleted()
+    getMcuIp().then(onStepCompleted).catch(onStepError)
   }
 
   function testConnection () {

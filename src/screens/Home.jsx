@@ -13,6 +13,7 @@ import { useAccess } from '../context/Access'
 import { useUsers } from '../context/Users'
 
 import formatter from '../utils/formatter'
+import { Feather } from '@expo/vector-icons'
 
 function Home () {
   const { connected } = useConnection()
@@ -101,14 +102,24 @@ function Home () {
                             {item.name}
                           </Text>
                           <Text className="text-xs text-gray-400">
-                            {item.role}
+                            {formatter.role(item.role)}
                           </Text>
                         </View>
 
-                        <Text className="text-xs text-gray-400">
-                          {item.date.toFormat('dd/MM/yy')} •{' '}
-                          {item.date.toFormat('HH:mm')}
-                        </Text>
+                        <View className="items-end">
+                          <View className="flex-row items-center gap-1">
+                            <View  className="opacity-30">
+                              <Feather size={10} name={formatter.actionIcon(item.action)} />
+                            </View>
+                            <Text className="text-xs text-gray-400">
+                              {formatter.action(item.action)}
+                            </Text>
+                          </View>
+                          <Text className="text-xs text-gray-400">
+                            {item.date.toFormat('dd/MM/yy')} •{' '}
+                            {item.date.toFormat('HH:mm')}
+                          </Text>
+                        </View>
                       </View>
                     </View>
                   )} />

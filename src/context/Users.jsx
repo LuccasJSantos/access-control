@@ -4,26 +4,33 @@ import { APP_USERS_FILENAME } from '@env'
 import { DateTime } from 'luxon'
 import storage from '../utils/storage'
 import { useConnection } from './Connection'
+import { useLogin } from './Login'
 
 const UsersContext = createContext({})
 
 export const UsersProvider = ({ children }) => {
   const { connected, ip } = useConnection()
+  const { id, sessionId } = useLogin()
   const [users, setUsers] = useState([] || [])
 
   const requestUsersData = async () => {
-    return Promise.resolve(`AE2A5BC4,2,Mário Marques,professor,0
-AE2A5BC4,3,Geovanni Adan,it,0
-AE2A5BC4,1,Júlia da Silva,student,0
-AE2A5BC4,1,Lael Jader de Oliveira,student,0
-AE2A5BC4,1,Arnaldo Marcos dos Santos,student,0
-AE2A5BC4,2,Rita de Cássio,professor,0
-AE2A5BC4,2,Filipe de Souza,coordinator,0
-AE2A5BC4,0,Márcia Ferreira de Calle,cleaner,0
-AE2A5BC4,1,Flávio Pereira da Silva,cleaner,0
-AE2A5BC4,1,Ivan Cardoso Machado,student,0
-AE2A5BC4,1,Lucas Kan Toshiba,student,0`)
-    // return axios.get(`http://${ip}/users`)
+//     return Promise.resolve(`AE2A5BC4,2,Mário Marques,professor,0
+// AE2A5BC4,3,Geovanni Adan,it,0
+// AE2A5BC4,1,Júlia da Silva,student,0
+// AE2A5BC4,1,Lael Jader de Oliveira,student,0
+// AE2A5BC4,1,Arnaldo Marcos dos Santos,student,0
+// AE2A5BC4,2,Rita de Cássio,professor,0
+// AE2A5BC4,2,Filipe de Souza,coordinator,0
+// AE2A5BC4,0,Márcia Ferreira de Calle,cleaner,0
+// AE2A5BC4,1,Flávio Pereira da Silva,cleaner,0
+// AE2A5BC4,1,Ivan Cardoso Machado,student,0
+// AE2A5BC4,1,Lucas Kan Toshiba,student,0`)
+    return axios.get(`http://${ip}/users`, {
+      headers: {
+        'X-RFID': id,
+        Authorization: `Basic ${btoa(`${id}:${sessionId}`)}`
+      }
+    })
       .then(data => {
         const lines = data.split('\n')
         const usersData = lines
@@ -66,26 +73,31 @@ AE2A5BC4,1,Lucas Kan Toshiba,student,0`)
       })
   }
 
-  const awaitAdminCard = async () => {
-    return new Promise((res, rej) => {
-      setTimeout(res, 1000)
+  const awaitUserCard = async ({ name, role, moderator }) => {
+    // return new Promise((res, rej) => {
+    //   setTimeout(() => res('E4FA234DC'), 1000)
+    // })
+    return axios.get(`http://${ip}/user_regedit?name=${name},role=${role},mod=${Numer(moderator)}`, {
+      headers: {
+        'X-RFID': id,
+        Authorization: `Basic ${btoa(`${id}:${sessionId}`)}`
+      }
     })
-    return Promise.resolve()
-    // return axios.get(`http://${ip}/user-register?admin`)
-      .then((admin_code = 'admin') => {
-        return Promise.resolve() 
-      })
+      .then(userCard => userCard)
       .catch(error => error)
   }
 
-  const awaitUserCard = async () => {
-    return new Promise((res, rej) => {
-      setTimeout(() => res('E4FA234DC'), 1000)
+  const deleteUser = async (rfid) => {
+    return axios.get(`http://${ip}/user_del?rfid=${rfid}`, {
+      headers: {
+        'X-RFID': id,
+        Authorization: `Basic ${btoa(`${id}:${sessionId}`)}`
+      }
     })
-    return Promise.resolve()
-    // return axios.get(`http://${ip}/user-register?user`)
-      .then(userCard => userCard)
-      .catch(error => error)
+      .then(() => true)
+      .catch(() => {
+        throw new Error('Não foi possível deletar o usuário')
+      })
   }
 
   const sendForm = async () => {
@@ -94,7 +106,7 @@ AE2A5BC4,1,Lucas Kan Toshiba,student,0`)
 
   return (
     <UsersContext.Provider
-      value={{ users, requestUsersData, init, awaitAdminCard, awaitUserCard, sendForm }}>
+      value={{ users, requestUsersData, init, awaitUserCard, sendForm, deleteUser }}>
       {children}
     </UsersContext.Provider>
   )

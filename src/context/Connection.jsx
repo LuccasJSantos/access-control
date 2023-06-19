@@ -22,9 +22,9 @@ export const ConnectionProvider = ({ children }) => {
     setIp('')
   }
 
-  const connectionCheck = () => {
-    // return axios.get(`${ip}/dooraccess`)
-    return Promise.resolve({ status: 200 })
+  const connectionCheck = async () => {
+    // return Promise.resolve({ status: 200 })
+    return axios.get(`${ip}/dooraccess`)
       .then((res) => (res.status === 200))
       .then((conn) => {
         if (!conn) {
@@ -53,8 +53,8 @@ export const ConnectionProvider = ({ children }) => {
           return false
         }
 
-        return Promise.resolve({ status: 200 })
-        // return axios.get(`http://${data.ip}/dooraccess`)
+        // return Promise.resolve({ status: 200 })
+        return axios.get(`http://${data.ip}/dooraccess`)
           .then(res => {
             if (!res.status === 200) { return false }
 

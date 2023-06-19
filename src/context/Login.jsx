@@ -11,22 +11,28 @@ const LoginContext = createContext({})
 
 export const LoginProvider = ({ children }) => {
   const { ip } = useConnection()
+  const [access, setAccess] = useState(0)
   const [sessionId, setSessionId] = useState('')
   const [userId, setUserId] = useState('')
   const [username, setUsername] = useState('')
+  const [role, setRole] = useState('')
 
   const requestAuthentication = async () => {
-    return Promise.resolve('5ABfaBEg42f,EB5A42CE,Luccas Josival da Silva Santos')
-    // return axios.get(`http://${ip}/login`)
+    // return Promise.resolve('5ABfaBEg42f,EB5A42CE,Luccas Josival da Silva Santos')
+    return axios.get(`http://${ip}/login`)
       .then(data => {
-        const [session, id, username] = data.split(',')
+        const [id, access, name, role, session] = data.split(',')
 
+        setAccess(access)
         setSessionId(session)
         setUserId(id)
-        setUsername(username)
+        setUsername(name)
+        setRole(role)
 
         return storage.write(APP_SESSION_FILENAME, {
           username,
+          access,
+          role,
           sessionId: session,
           userId: id,
           expireAt: DateTime.now().plus({ seconds: 30 })
@@ -46,9 +52,11 @@ export const LoginProvider = ({ children }) => {
           return { valid: false, message: 'Sessão expirada' }
         }
 
-        setUserId(data.userId)
-        setSessionId(data.sessionId)
-        setUsername(data.username)
+        setAccess(data.access)
+        setSessionId(data.session)
+        setUserId(data.id)
+        setUsername(data.name)
+        setRole(data.role)
 
         return { valid: true, message: 'Usuário autenticado!' }
       })
@@ -61,7 +69,7 @@ export const LoginProvider = ({ children }) => {
 
   return (
     <LoginContext.Provider
-      value={{ sessionId, userId, username, requestAuthentication, login }}>
+      value={{ sessionId, userId, access, role, username, requestAuthentication, login }}>
       {children}
     </LoginContext.Provider>
   )
