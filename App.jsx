@@ -23,8 +23,8 @@ export default function App () {
   return (
     <NavigationContainer>
       <NativeBaseProvider>
-        <LoginProvider>
-          <ConnectionProvider>
+        <ConnectionProvider>
+          <LoginProvider>
             <AccessProvider>
               <UsersProvider>
                 <StatusBar hidden height="auto" />
@@ -40,8 +40,8 @@ export default function App () {
                 </Stack.Navigator>
               </UsersProvider>
             </AccessProvider>
-          </ConnectionProvider>
-        </LoginProvider>
+          </LoginProvider>
+        </ConnectionProvider>
       </NativeBaseProvider>
     </NavigationContainer>
   )
