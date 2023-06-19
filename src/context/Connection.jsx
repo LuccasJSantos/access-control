@@ -14,7 +14,7 @@ import storage from '../utils/storage'
 const ConnectionContext = createContext({})
 
 export const ConnectionProvider = ({ children }) => {
-  const [connected, setConnected] = useState(true)
+  const [connected, setConnected] = useState(false)
   const [ip, setIp] = useState('')
 
   const reset = () => {

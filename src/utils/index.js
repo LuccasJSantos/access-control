@@ -15,6 +15,8 @@ export default {
 
   propEq: (prop, value) => object => object[prop] === value,
 
+  sleep: time => new Promise(res => setTimeout(res, time)),
+
   sort: fn => array => array.sort(fn),
 
   tap: fn => arg => { fn(...arg); return arg },

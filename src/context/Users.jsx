@@ -12,24 +12,30 @@ export const UsersProvider = ({ children }) => {
   const [users, setUsers] = useState([] || [])
 
   const requestUsersData = async () => {
-    return Promise.resolve(`Mário Marques,Professor,2023-06-02T23:23:00Z
-Geovanni Adan,Técnico de Informática,2023-06-07T07:29:17Z
-Júlia da Silva,Aluno,2023-06-01T22:19:04Z
-Lael Jader de Oliveira,Aluno,2023-06-11T16:27:53Z
-Arnaldo Marcos dos Santos,Aluno,2023-05-03T19:23:00Z
-Rita de Cássio,Professor,2023-05-24T19:32:46Z
-Filipe de Souza,Coordenador,2023-04-13T19:35:16Z
-Márcia Ferreira de Calle,Limpeza,2023-05-25T19:13:07Z
-Flávio Pereira da Silva,Limpeza,2023-06-10T21:17:32Z
-Ivan Cardoso Machado,Aluno,2023-04-22T15:16:14Z
-Lucas Kan Toshiba,Aluno,2023-05-25T19:13:07Z`)
+    return Promise.resolve(`AE2A5BC4,2,Mário Marques,professor,0
+AE2A5BC4,3,Geovanni Adan,it,0
+AE2A5BC4,1,Júlia da Silva,student,0
+AE2A5BC4,1,Lael Jader de Oliveira,student,0
+AE2A5BC4,1,Arnaldo Marcos dos Santos,student,0
+AE2A5BC4,2,Rita de Cássio,professor,0
+AE2A5BC4,2,Filipe de Souza,coordinator,0
+AE2A5BC4,0,Márcia Ferreira de Calle,cleaner,0
+AE2A5BC4,1,Flávio Pereira da Silva,cleaner,0
+AE2A5BC4,1,Ivan Cardoso Machado,student,0
+AE2A5BC4,1,Lucas Kan Toshiba,student,0`)
     // return axios.get(`http://${ip}/users`)
       .then(data => {
         const lines = data.split('\n')
         const usersData = lines
           .map(line => line.split(','))
-          .map(([name, role, date]) => ({ name, role, date: DateTime.fromISO(date) }))
-          .sort((a, b) => b.date.toMillis() < a.date.toMillis() ? -1 : 1)
+          .map(([card, access, name, role, session]) => ({ 
+            card, 
+            session, 
+            name, 
+            role, 
+            moderator: Number(access) === 2, 
+            access: Number(access) 
+          }))
 
         setUsers(usersData)
 
@@ -60,9 +66,35 @@ Lucas Kan Toshiba,Aluno,2023-05-25T19:13:07Z`)
       })
   }
 
+  const awaitAdminCard = async () => {
+    return new Promise((res, rej) => {
+      setTimeout(res, 1000)
+    })
+    return Promise.resolve()
+    // return axios.get(`http://${ip}/user-register?admin`)
+      .then((admin_code = 'admin') => {
+        return Promise.resolve() 
+      })
+      .catch(error => error)
+  }
+
+  const awaitUserCard = async () => {
+    return new Promise((res, rej) => {
+      setTimeout(() => res('E4FA234DC'), 1000)
+    })
+    return Promise.resolve()
+    // return axios.get(`http://${ip}/user-register?user`)
+      .then(userCard => userCard)
+      .catch(error => error)
+  }
+
+  const sendForm = async () => {
+    return Promise.resolve()
+  }
+
   return (
     <UsersContext.Provider
-      value={{ users, requestUsersData, init }}>
+      value={{ users, requestUsersData, init, awaitAdminCard, awaitUserCard, sendForm }}>
       {children}
     </UsersContext.Provider>
   )

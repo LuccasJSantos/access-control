@@ -12,6 +12,8 @@ import { useLogin } from '../context/Login'
 import { useAccess } from '../context/Access'
 import { useUsers } from '../context/Users'
 
+import formatter from '../utils/formatter'
+
 function Home () {
   const { connected } = useConnection()
   const { username } = useLogin()
@@ -130,14 +132,9 @@ function Home () {
                               {item.name}
                             </Text>
                             <Text className="text-xs text-gray-400">
-                              {item.role}
+                              {formatter.role(item.role)}
                             </Text>
                           </View>
-
-                          <Text className="text-xs text-gray-400">
-                            {item.date.toFormat('dd/MM/yy')} •{' '}
-                            {item.date.toFormat('HH:mm')}
-                          </Text>
                         </View>
                       </View>
                     )

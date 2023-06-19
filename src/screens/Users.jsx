@@ -1,4 +1,4 @@
-import { Fab, Input, Skeleton, Text, Toast } from 'native-base'
+import { Button, Center, Checkbox, Modal, Fab, VStack, Input, Select, Skeleton, Spinner, Text, Toast } from 'native-base'
 import { SafeAreaView, View, FlatList, RefreshControl, TouchableOpacity } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 
@@ -10,13 +10,48 @@ import List from '../components/List'
 import { useConnection } from '../context/Connection'
 import { useUsers } from '../context/Users'
 import Cond, { CondItem } from '../components/Cond'
+import { useEffect } from 'react'
+
+import u from '../utils'
+import formatter from '../utils/formatter'
 
 function Home () {
   const { connected } = useConnection()
-  const { users, init: usersInit } = useUsers()
+  const { users, init: usersInit, awaitAdminCard, awaitUserCard, sendForm } = useUsers()
 
   const [refreshing, setRefreshing] = useState(false)
   const [filterFn, setFilterFn] = useState(() => () => true)
+  const [userModal, setUserModal] = useState(false)
+  const [modalState, setModalState] = useState('form') // admin | user | form
+  const [form, setForm] = useState({
+    name: '',
+    role: '',
+    card: '',
+    moderator: false
+  })
+
+  const roles = [{
+    name: 'student',
+    text: 'Estudante',
+  },{
+    name:  'professor',
+    text: 'Professor',
+  },{
+    name:  'cleaner',
+    text: 'Limpeza',
+  },{
+    name:  'coordinator',
+    text: 'Coordenador',
+  },{
+    name:  'director',
+    text: 'Diretor',
+  },{
+    name:  'employee',
+    text: 'Funcionário',
+  }, {
+    name: 'it',
+    text: 'Técnico de informática'
+  }]
 
   const searchInput = useRef()
 
@@ -34,6 +69,47 @@ function Home () {
 
     setFilterFn(() => fn)
   }
+
+  function onOpenUserForm (user) {
+    setUserModal(true)
+    setModalState('form')
+
+    if (user) {
+      setForm({ card: user.card, name: user.name, role: user.role, moderator: user.moderator })
+    }
+  }
+
+  function resetForm () {
+    setForm({ name: '', card: '', moderator: '', role: '' })
+  }
+
+  async function onSendToNodeMcu () {
+    return sendForm(form)
+      .then(() => {
+        setModalState('user')
+      })
+      .catch(error => Toast.show({ description: error.message, duration: 3000 }))
+  }
+
+  useEffect(() => {
+    if (userModal) {
+      switch (modalState) {
+        case 'user': 
+          awaitUserCard()
+            .then(card => setForm(current => Object.assign({}, current, { card })))
+            .then(resetForm)
+            .then(() => Toast.show({ description: 'Usuário cadastrado com sucesso', duration: 3000, backgroundColor: '#4CAF50' }))
+            .then(() => u.sleep(1000))
+            .then(() => setUserModal(false))
+            .then(() => loadData())
+            .catch(error => Toast.show({ description: error.message, duration: 3000 }))
+          break
+        case 'form': 
+          break
+      }
+
+    }
+  }, [userModal, modalState])
 
   return (
     <LinearGradient
@@ -81,7 +157,7 @@ function Home () {
                   items={users.filter(filterFn)}
                   footerText={!connected && 'Conecte-se para atualizar a lista'}
                   render={item => (
-                    <View>
+                    <TouchableOpacity onPress={() => onOpenUserForm(item)}>
                       <Cond watch={refreshing}>
                         <CondItem when={true} className="flex-row items-center justify-between w-full py-3 px-2">
                           <View className="gap-1.5">
@@ -97,7 +173,7 @@ function Home () {
                               {item.name}
                             </Text>
                             <Text className="text-xs text-gray-400">
-                              {item.role}
+                              {formatter.role(item.role)}
                             </Text>
                           </View>
 
@@ -112,16 +188,75 @@ function Home () {
                           </TouchableOpacity>
                         </CondItem>
                       </Cond>
-                    </View>
+                    </TouchableOpacity>
                   )} />
               </Section>
               <Fab
                 className="mt-4 active:bg-green-400"
                 bgColor="green.500"
                 leftIcon={<Feather name="plus" color="white" size={16} />}
-                label="Adicionar usuário" />
+                label="Adicionar usuário"
+                onPress={() => onOpenUserForm()} />
             </View>
           } />
+          <Center>
+            <Modal isOpen={userModal} closeOnOverlayClick={true} onClose={() => {
+              resetForm()
+              setUserModal(false)
+              setModalState('admin')
+            }} size="sm">
+              <Modal.Content>
+                <Modal.Header>Cadastro de usuário</Modal.Header>
+                <Modal.Body>
+                  <Cond watch={modalState}>
+                    <CondItem when="admin">
+                      <Center>
+                        <Text className="text-center text-lg">Passe o cartão administrador ou de usuário autorizado</Text>
+                        <Spinner size="lg" mt="4" />
+                      </Center>
+                    </CondItem>
+                    <CondItem when="user">
+                      <Center>
+                        <Text className="text-center text-lg">Passe o cartão novo usuário</Text>
+                        <Spinner size="lg" mt="4" />
+                      </Center>
+                    </CondItem>
+                    <CondItem when="form">
+                      <VStack space={2}>
+                        <Input 
+                          placeholder="Nome completo"
+                          value={form.name}
+                          onChangeText={name => setForm(current => Object.assign({}, current, { name }))} />
+
+                        <Select 
+                          selectedValue={form.role}
+                          minWidth="200"
+                          placeholder="Função"
+                          mt={1} 
+                          onValueChange={role => setForm(current => Object.assign({}, current, { role }))}>
+                          { roles.map((role, index) => 
+                              <Select.Item key={index} label={role.text} value={role.name} />) }
+                        </Select>
+
+                        <Checkbox 
+                          mt={2}
+                          isChecked={form.moderator}
+                          onChange={moderator => setForm(current => Object.assign({}, current, { moderator }))}>Moderador</Checkbox>
+
+                        <Button
+                          disabled={!connected}
+                          opacity={connected ? 1 : 0.6}
+                          className="mt-2 active:bg-green-400"
+                          bgColor="green.500"
+                          onPress={onSendToNodeMcu}
+                        >Finalizar</Button>
+                      </VStack>
+                    </CondItem>
+                  </Cond>
+                </Modal.Body>
+              </Modal.Content>
+            </Modal>
+          </Center>
       </SafeAreaView>
     </LinearGradient>
   )
