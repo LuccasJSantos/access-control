@@ -32,7 +32,7 @@ const useConnection = () => {
 
         setConnected(true)
 
-        const expireAt = DateTime.now().plus({ days: 7 })
+        const expireAt = DateTime.now().plus({ weeks: 1 })
         storage.write(APP_NODEMCU_CFG_FILENAME, { ip, expireAt })
 
         return true

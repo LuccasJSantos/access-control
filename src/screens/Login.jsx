@@ -18,7 +18,7 @@ import { useLogin } from '../context/Login'
 function Login () {
   const navigation = useNavigation()
   const { connected, connectionInit } = useConnection()
-  const { login, requestAuthentication } = useLogin()
+  const { login, requestAuth, requestAuthEnable } = useLogin()
   const [state, setState] = useState('idle') // idle | card
 
   function onLogin () {
@@ -35,13 +35,10 @@ function Login () {
       })
   }
 
-  const LoginText = ({ text }) => (
-    <Text className="font-semibold text-center text-white text-xl">{text}</Text>
-  )
-
   useEffect(() => {
     if (state === 'card') {
-      requestAuthentication()
+      requestAuthEnable()
+        .then(requestAuth)
         .then(() => navigation.reset({ index: 0, routes: [{ name: 'home' }] }))
         .catch(error => {
           setTimeout(() => setState('idle'), 2000)
@@ -70,6 +67,10 @@ function Login () {
         })
       })
   }, [])
+
+  const LoginText = ({ text }) => (
+    <Text className="font-semibold text-center text-white text-xl">{text}</Text>
+  )
 
   return (
     <ImageBackground className="flex-1 relative" source={bg} resizeMode="cover">

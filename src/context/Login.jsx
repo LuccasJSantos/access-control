@@ -17,30 +17,40 @@ export const LoginProvider = ({ children }) => {
   const [username, setUsername] = useState('')
   const [role, setRole] = useState('')
 
-  const requestAuthentication = async () => {
+  const requestAuthEnable = async () => axios.get(`http://${ip}/login`)
+
+  const requestAuth = async () => {
+    return new Promise((resolve, reject) => {
     // return Promise.resolve('5ABfaBEg42f,EB5A42CE,Luccas Josival da Silva Santos')
-    return axios.get(`http://${ip}/login`)
-      .then(data => {
-        const [id, access, name, role, session] = data.split(',')
+      const recurse = () => {
+        return axios.get(`http://${ip}/login_rfid`)
+          .then(res => {
+            if (res.status === 204) {
+              return setTimeout(recurse, 2000)
+            }
 
-        setAccess(access)
-        setSessionId(session)
-        setUserId(id)
-        setUsername(name)
-        setRole(role)
+            const [id, access, name, role, session] = res.data.split(',')
 
-        return storage.write(APP_SESSION_FILENAME, {
-          username,
-          access,
-          role,
-          sessionId: session,
-          userId: id,
-          expireAt: DateTime.now().plus({ seconds: 30 })
-        })
-      })
-      .catch(() => {
-        throw new Error('Tente novamente')
-      })
+            setAccess(access)
+            setSessionId(session)
+            setUserId(id)
+            setUsername(name)
+            setRole(role)
+
+            return resolve(storage.write(APP_SESSION_FILENAME, {
+              name,
+              access,
+              role,
+              sessionId: session,
+              userId: id,
+              expireAt: DateTime.now().plus({ weeks: 1 })
+            }))
+          })
+          .catch(() => reject(new Error('Tente novamente')))
+      }
+
+      return recurse()
+    })
   }
 
   const login = async () => {
@@ -58,6 +68,15 @@ export const LoginProvider = ({ children }) => {
         setUsername(data.name)
         setRole(data.role)
 
+        storage.write(APP_SESSION_FILENAME, {
+          name: data.name,
+          access: data.access,
+          role: data.role,
+          sessionId: data.session,
+          userId: data.id,
+          expireAt: DateTime.now().plus({ weeks: 1 })
+        })
+
         return { valid: true, message: 'Usuário autenticado!' }
       })
       .catch((error) => {
@@ -69,7 +88,7 @@ export const LoginProvider = ({ children }) => {
 
   return (
     <LoginContext.Provider
-      value={{ sessionId, userId, access, role, username, requestAuthentication, login }}>
+      value={{ sessionId, userId, access, role, username, requestAuth, requestAuthEnable, login }}>
       {children}
     </LoginContext.Provider>
   )

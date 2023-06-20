@@ -14,9 +14,10 @@ const List = ({ items, render, footerText }) => {
         : <FlatList
           scrollEnabled
           data={items}
+          keyExtractor={(_, index) => index}
           renderItem={({ item, index }) => {
             return (
-              <View key={index}>
+              <View>
                 {render(item, index, items)}
                 {index < items.length - 1 && (
                   <Divider className="bg-gray-100" />

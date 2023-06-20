@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 
 import { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
+import { Feather } from '@expo/vector-icons'
 import Section from '../components/Section'
 import ConnectionWidget from '../components/ConnectionWidget'
 import List from '../components/List'
@@ -13,7 +14,6 @@ import { useAccess } from '../context/Access'
 import { useUsers } from '../context/Users'
 
 import formatter from '../utils/formatter'
-import { Feather } from '@expo/vector-icons'
 
 function Home () {
   const { connected } = useConnection()
@@ -30,8 +30,8 @@ function Home () {
   function loadData () {
     setRefreshing(true)
     return Promise.all([
-      accessInit().catch(error => Toast.show({ description: error.message, duration: 3000 })),
-      usersInit().catch(error => Toast.show({ description: error.message, duration: 3000 }))
+      accessInit(),
+      usersInit()
     ])
       .finally(() => setRefreshing(false))
   }
@@ -39,6 +39,7 @@ function Home () {
   function onRefreshData () {
     loadData()
       .then(() => Toast.show({ description: 'Dados atualizados', duration: 3000 }))
+      .catch(error => Toast.show({ description: error.message, duration: 3000 }))
   }
 
   useEffect(() => {
@@ -99,16 +100,16 @@ function Home () {
                       <View className="flex-row items-center justify-between w-full py-3 px-2">
                         <View className="gap-0.5">
                           <Text className="text-xs font-semibold">
-                            {item.name}
+                            {item.name ? item.name : 'Sem identificação'}
                           </Text>
                           <Text className="text-xs text-gray-400">
-                            {formatter.role(item.role)}
+                            {formatter.role(item.role ? item.role : 'unidentified')}
                           </Text>
                         </View>
 
                         <View className="items-end">
                           <View className="flex-row items-center gap-1">
-                            <View  className="opacity-30">
+                            <View className="opacity-30">
                               <Feather size={10} name={formatter.actionIcon(item.action)} />
                             </View>
                             <Text className="text-xs text-gray-400">
@@ -128,7 +129,7 @@ function Home () {
               {/* Users section */}
               <Section
                 title={`Usuários (${users.length})`}
-                link={users.slice(4).length && { title: 'Ver todos', screen: 'users' }}
+                link={{ title: 'Ver todos', screen: 'users' }}
                 className="mt-5"
               >
                 <List

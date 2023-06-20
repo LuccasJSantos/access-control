@@ -17,6 +17,8 @@
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
     "axios": "^1.4.0",
+    "base-64": "^1.0.0",
+    "btoa": "^1.2.1",
     "expo": "~48.0.18",
     "expo-file-system": "~15.2.2",
     "expo-linear-gradient": "~12.1.2",

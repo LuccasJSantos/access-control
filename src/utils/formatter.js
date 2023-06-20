@@ -1,12 +1,14 @@
 export default {
   role: (text) => ({
+    admin: 'Administrador',
     student: 'Estudante',
     professor: 'Professor',
     cleaner: 'Limpeza',
     coordinator: 'Coordenador',
     director: 'Diretor',
     employee: 'Funcionário',
-    it: 'Técnico de informática'
+    it: 'Técnico de informática',
+    unidentified: 'Sem cadastro'
   })[text],
   action: (id) => ({
     0: 'Acesso negado',
@@ -29,5 +31,5 @@ export default {
     1: 'Acesso permitido',
     2: 'Moderador',
     3: 'Admin'
-  }),
+  })
 }

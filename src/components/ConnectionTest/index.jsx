@@ -2,6 +2,7 @@ import { Feather } from '@expo/vector-icons'
 import { Button, ScrollView, Spinner } from 'native-base'
 import { useState, useEffect } from 'react'
 import { Text, View } from 'react-native'
+import WifiManager from 'react-native-wifi-reborn'
 import Cond, { CondItem } from '../Cond'
 import { useConnection } from '../../context/Connection'
 import u from '../../utils'
@@ -43,6 +44,8 @@ const ConnectionTest = ({ data, onCompleted, onError, onBack }) => {
     console.log('Connect to MCU')
     // return onStepCompleted()
     connect({ ssid: data.ssid, password: data.password })
+      .then(() => WifiManager.disconnect())
+      .then(() => u.sleep(15000))
       .then(onStepCompleted)
       .catch(onStepError)
   }
@@ -50,7 +53,9 @@ const ConnectionTest = ({ data, onCompleted, onError, onBack }) => {
   async function findNodeMCU () {
     console.log('Find')
     // return onStepCompleted()
-    getMcuIp().then(onStepCompleted).catch(onStepError)
+    getMcuIp()
+      .then(() => u.sleep(2000))
+      .then(onStepCompleted).catch(onStepError)
   }
 
   function testConnection () {

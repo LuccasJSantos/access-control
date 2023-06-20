@@ -48,8 +48,8 @@ function Home () {
           data={['']}
           showsVerticalScrollIndicator={false}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={loadData} />}
-          renderItem={() =>
-            <View>
+          renderItem={({ index }) =>
+            <View key={index}>
               {/* Header */}
               <View className="flex-row items-center justify-between w-full">
                 <Text className="text-xl font-bold">Acessos</Text>
@@ -97,19 +97,16 @@ function Home () {
                         <CondItem when={false} className="flex-row items-center justify-between w-full py-3 px-2">
                           <View className="gap-0.5">
                             <Text className="text-xs font-semibold">
-                              {item.name}
+                              {item.name ? item.name : 'Sem identificação'}
                             </Text>
                             <Text className="text-xs text-gray-400">
-                              {formatter.role(item.role)}
-                            </Text>
-                            <Text className="text-xs text-gray-400">
-                              {formatter.action(item.action)}
+                              {formatter.role(item.role ? item.role : 'unidentified')}
                             </Text>
                           </View>
 
                           <View className="items-end">
                             <View className="flex-row items-center gap-1">
-                              <View  className="opacity-30">
+                              <View className="opacity-30">
                                 <Feather size={10} name={formatter.actionIcon(item.action)} />
                               </View>
                               <Text className="text-xs text-gray-400">

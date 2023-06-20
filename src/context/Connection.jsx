@@ -66,21 +66,21 @@ export const ConnectionProvider = ({ children }) => {
           .catch(() => false)
       }).catch(() => false)
 
-      if (!res) {
-        const ip = await getMcuIp().catch(() => false)
+    if (!res) {
+      const ip = await getMcuIp().catch(() => false)
 
-        if (!ip) {
-          reset()
-          return false
-        }
-
-        setConnected(true)
-        setIp(ip)
-
-        return true
+      if (!ip) {
+        reset()
+        return false
       }
 
+      setConnected(true)
+      setIp(ip)
+
       return true
+    }
+
+    return true
   }
 
   const getMcuIp = async () => {
@@ -90,16 +90,18 @@ export const ConnectionProvider = ({ children }) => {
 
         const ip = await Promise.race(
           new Array(256).fill().map((_, host) => {
-
             return new Promise((resolve, reject) => {
               const ip = `${net}.${host + 1}`
               return axios.get(`http://${ip}/dooraccess`)
                 .then((res) => {
                   if (res.status === 200 && res.data === 'NodeMCU Door Access API') {
+                    console.log('ip found', ip)
                     return resolve(ip)
                   }
                 })
-                .catch(() => setTimeout(reject, 5000))
+                .catch(() => {
+                  setTimeout(reject, 5000)
+                })
             })
           })
         ).catch(() => undefined)
