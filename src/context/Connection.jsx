@@ -24,7 +24,7 @@ export const ConnectionProvider = ({ children }) => {
 
   const connectionCheck = async () => {
     // return Promise.resolve({ status: 200 })
-    return axios.get(`${ip}/dooraccess`)
+    return axios.get(`http://${ip}/dooraccess`)
       .then((res) => (res.status === 200))
       .then((conn) => {
         if (!conn) {
