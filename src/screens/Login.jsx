@@ -12,8 +12,8 @@ import {
 import Cond, { CondItem } from '../components/Cond'
 import bg from '../../assets/login-bg.png'
 import logo from '../../assets/logo.png'
-import { useConnection } from '../context/Connection'
-import { useLogin } from '../context/Login'
+import { useConnection } from '../contexts/Connection'
+import { useLogin } from '../contexts/Login'
 
 function Login () {
   const navigation = useNavigation()

@@ -9,7 +9,7 @@ import WiFiList from '../components/WiFiList'
 import Cond, { CondItem } from '../components/Cond'
 import ConnectionTest from '../components/ConnectionTest'
 import ConnectionWidget from '../components/ConnectionWidget'
-import { useConnection } from '../context/Connection'
+import { useConnection } from '../contexts/Connection'
 import u from '../utils'
 
 function ConnectionSettings () {

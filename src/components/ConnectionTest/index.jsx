@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Text, View } from 'react-native'
 import WifiManager from 'react-native-wifi-reborn'
 import Cond, { CondItem } from '../Cond'
-import { useConnection } from '../../context/Connection'
+import { useConnection } from '../../contexts/Connection'
 import u from '../../utils'
 
 const ConnectionTest = ({ data, onCompleted, onError, onBack }) => {

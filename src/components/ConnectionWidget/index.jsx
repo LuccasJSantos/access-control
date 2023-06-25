@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native'
 import { Feather } from '@expo/vector-icons'
-import { useConnection } from '../../context/Connection'
+import { useConnection } from '../../contexts/Connection'
 
 const Widget = ({ className }) => {
   const { connected } = useConnection()
