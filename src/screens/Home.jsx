@@ -61,7 +61,7 @@ function Home () {
               {/* Header */}
               <View className="flex-row items-center justify-between w-full">
                 <Text className="text-xl font-bold">
-                  Bom dia,
+                  {formatter.greet(new Date())},
                   <Text className="ml-1 font-normal text-gray-400"> {firstname}</Text>
                 </Text>
 

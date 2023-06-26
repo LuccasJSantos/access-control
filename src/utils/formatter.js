@@ -31,5 +31,14 @@ export default {
     1: 'Acesso permitido',
     2: 'Moderador',
     3: 'Admin'
-  })
+  }),
+  greet: (date) => {
+    const hour = date.getHours()
+
+    if (hour < 4) return 'Boa noite'
+    if (hour < 12) return 'Bom dia'
+    if (hour < 19) return 'Boa tarde'
+
+    return 'Boa noite'
+  }
 }
