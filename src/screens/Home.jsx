@@ -1,5 +1,5 @@
-import { Avatar, Text, Toast } from 'native-base'
-import { SafeAreaView, TouchableOpacity, View, FlatList, RefreshControl } from 'react-native'
+import { Avatar, Menu, Text, Toast } from 'native-base'
+import { SafeAreaView, TouchableOpacity, View, FlatList, RefreshControl, Pressable } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 
 import { useEffect, useState } from 'react'
@@ -17,7 +17,7 @@ import formatter from '../utils/formatter'
 
 function Home () {
   const { connected } = useConnection()
-  const { username } = useLogin()
+  const { username, logout } = useLogin()
   const { access, init: accessInit } = useAccess()
   const { users, init: usersInit } = useUsers()
   const navigation = useNavigation()
@@ -65,7 +65,16 @@ function Home () {
                   <Text className="ml-1 font-normal text-gray-400"> {firstname}</Text>
                 </Text>
 
-                <Avatar className="bg-accent">{avatarText}</Avatar>
+                <Menu placement="bottom right" mt="2" trigger={props => {
+                  return <Pressable {...props}>
+                    <Avatar className="bg-accent">{avatarText}</Avatar>
+                  </Pressable>
+                }}>
+                  <Menu.Item className="flex-row justify-between" onPress={logout}>
+                    <Feather name="log-out" />
+                    <Text>Sair</Text>
+                  </Menu.Item>
+                </Menu>
               </View>
 
               {/* Connection section */}

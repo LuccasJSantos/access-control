@@ -2,8 +2,11 @@ import axios from 'axios'
 import { DateTime, Interval } from 'luxon'
 import { useState, createContext, useContext } from 'react'
 import {
-  APP_SESSION_FILENAME
+  APP_SESSION_FILENAME,
+  APP_ACCESS_FILENAME,
+  APP_USERS_FILENAME
 } from '@env'
+import { useNavigation } from '@react-navigation/native'
 import storage from '../utils/storage'
 import { useConnection } from './Connection'
 
@@ -11,6 +14,8 @@ const LoginContext = createContext({})
 
 export const LoginProvider = ({ children }) => {
   const { ip } = useConnection()
+  const navigation = useNavigation()
+
   const [access, setAccess] = useState(0)
   const [sessionId, setSessionId] = useState('')
   const [userId, setUserId] = useState('')
@@ -86,9 +91,23 @@ export const LoginProvider = ({ children }) => {
       })
   }
 
+  const logout = async () => {
+    setAccess('')
+    setSessionId('')
+    setUserId('')
+    setUsername('')
+    setRole('')
+
+    await storage.delete(APP_SESSION_FILENAME).catch(() => {})
+    await storage.delete(APP_ACCESS_FILENAME).catch(() => {})
+    await storage.delete(APP_USERS_FILENAME).catch(() => {})
+
+    return navigation.reset({ index: 0, routes: [{ name: 'login' }] })
+  }
+
   return (
     <LoginContext.Provider
-      value={{ sessionId, userId, access, role, username, requestAuth, requestAuthEnable, login }}>
+      value={{ sessionId, userId, access, role, username, requestAuth, requestAuthEnable, login, logout }}>
       {children}
     </LoginContext.Provider>
   )
