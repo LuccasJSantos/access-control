@@ -27,7 +27,7 @@ export default function App () {
           <LoginProvider>
             <AccessProvider>
               <UsersProvider>
-                <StatusBar hidden height="auto" />
+                <StatusBar barStyle="dark-content" />
                 <Stack.Navigator
                   initialRouteName="login"
                   screenOptions={{ headerShown: false }}
