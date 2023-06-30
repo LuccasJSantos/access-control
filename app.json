@@ -1,15 +1,14 @@
 {
   "expo": {
-    "name": "access-control",
-    "slug": "access-control",
+    "name": "Door Access",
+    "slug": "door-access",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0D294E"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -20,13 +19,25 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#0D294E"
       },
-      "package": "br.com.fateccarapicuiba.accesscontrol"
+      "package": "br.com.fateccarapicuiba.accesscontrol",
+      "permissions": [
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.NEARBY_WIFI_DEVICES"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["react-native-wifi-reborn"]
+    "plugins": [
+      "react-native-wifi-reborn"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "3a50682b-f8ab-4723-b879-23ec1112258e"
+      }
+    },
+    "owner": "luccasjsantos"
   }
 }

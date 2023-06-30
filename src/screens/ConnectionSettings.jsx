@@ -1,5 +1,5 @@
 import { Button, IconButton, Text } from 'native-base'
-import { StatusBar, View } from 'react-native'
+import { View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useEffect, useState } from 'react'
 import StepIndicator from 'react-native-step-indicator'
@@ -9,7 +9,7 @@ import WiFiList from '../components/WiFiList'
 import Cond, { CondItem } from '../components/Cond'
 import ConnectionTest from '../components/ConnectionTest'
 import ConnectionWidget from '../components/ConnectionWidget'
-import { useConnection } from '../context/Connection'
+import { useConnection } from '../contexts/Connection'
 import u from '../utils'
 
 function ConnectionSettings () {
@@ -126,9 +126,7 @@ function ConnectionSettings () {
       className="absolute -z-10 top-0 left-0 w-full h-full py-3 px-5"
     >
       <View
-        className="h-full justify-between"
-        style={{ marginTop: StatusBar.currentHeight }}
-      >
+        className="h-full justify-between">
         <View className="w-full gap-1">
           <Text className="text-xl font-bold text-gray-500">Conexão</Text>
           <ConnectionWidget className="mt-0.5" />

@@ -12,8 +12,8 @@ import {
 import Cond, { CondItem } from '../components/Cond'
 import bg from '../../assets/login-bg.png'
 import logo from '../../assets/logo.png'
-import { useConnection } from '../context/Connection'
-import { useLogin } from '../context/Login'
+import { useConnection } from '../contexts/Connection'
+import { useLogin } from '../contexts/Login'
 
 function Login () {
   const navigation = useNavigation()
@@ -76,6 +76,7 @@ function Login () {
     <ImageBackground className="flex-1 relative" source={bg} resizeMode="cover">
       {/* Overlay */}
       <View className="absolute top-0 left-0 w-full h-full bg-[#0F131A90]" />
+      <StatusBar backgroundColor="transparent" translucent barStyle="light-content" />
 
       <SafeAreaView
         className="flex-1 items-center justify-center w-full h-full px-10"

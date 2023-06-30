@@ -21,5 +21,12 @@ export default {
       content,
       { encoding: FileSystem.EncodingType.UTF8 }
     )
+  },
+
+  async delete (filename) {
+    const directory = FileSystem.documentDirectory
+    const filenameExt = `${filename}.json`
+
+    return FileSystem.deleteAsync(`${directory}${filenameExt}`)
   }
 }
