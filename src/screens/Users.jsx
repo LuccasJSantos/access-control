@@ -91,7 +91,10 @@ function Home () {
       .then(() => u.sleep(1000))
       .then(() => setUserModal(false))
       .then(() => loadData())
-      .catch(error => Toast.show({ description: error.message, duration: 3000 }))
+      .catch(error => {
+        setUserModal(false)
+        Toast.show({ description: error.message, duration: 3000 })
+      })
   }
 
   async function onEditUser () {
