@@ -125,7 +125,7 @@ export const UsersProvider = ({ children }) => {
       })
       .catch(error => {
         console.log(error.message)
-        throw new Error('Erro registrar usuário')
+        throw new Error('Erro ao registrar usuário')
       })
   }
 

@@ -92,7 +92,10 @@ function Home () {
       .then(() => u.sleep(1000))
       .then(() => setUserModal(false))
       .then(() => loadData())
-      .catch(errorHandler)
+      .catch(error => {
+        setUserModal(false)
+        errorHandler(error)
+      })
   }
 
   async function onEditUser () {
