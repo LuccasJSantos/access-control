@@ -13,6 +13,7 @@ import Cond, { CondItem } from '../components/Cond'
 
 import u from '../utils'
 import formatter from '../utils/formatter'
+import { errorHandler } from '../utils/native'
 
 function Home () {
   const { connected } = useConnection()
@@ -57,7 +58,7 @@ function Home () {
   function loadData () {
     setRefreshing(true)
     Promise.all([
-      usersInit().catch(error => Toast.show({ description: error.message, duration: 3000 }))
+      usersInit().catch(errorHandler)
     ]).finally(() => setRefreshing(false))
   }
 
@@ -91,7 +92,7 @@ function Home () {
       .then(() => u.sleep(1000))
       .then(() => setUserModal(false))
       .then(() => loadData())
-      .catch(error => Toast.show({ description: error.message, duration: 3000 }))
+      .catch(errorHandler)
   }
 
   async function onEditUser () {
@@ -100,7 +101,7 @@ function Home () {
       .then(() => u.sleep(1000))
       .then(() => setUserModal(false))
       .then(() => loadData())
-      .catch(error => Toast.show({ description: error.message, duration: 3000 }))
+      .catch(errorHandler)
   }
 
   async function onDeleteUser (user) {
@@ -109,7 +110,7 @@ function Home () {
       .then(() => u.sleep(1000))
       .then(() => setUserModal(false))
       .then(() => loadData())
-      .catch(error => Toast.show({ description: error.message, duration: 3000 }))
+      .catch(errorHandler)
   }
 
   useEffect(() => {

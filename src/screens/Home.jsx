@@ -14,6 +14,7 @@ import { useAccess } from '../contexts/Access'
 import { useUsers } from '../contexts/Users'
 
 import formatter from '../utils/formatter'
+import { errorHandler } from '../utils/native'
 
 function Home () {
   const { connected } = useConnection()
@@ -39,7 +40,7 @@ function Home () {
   function onRefreshData () {
     loadData()
       .then(() => Toast.show({ description: 'Dados atualizados', duration: 3000 }))
-      .catch(error => Toast.show({ description: error.message, duration: 3000 }))
+      .catch(errorHandler)
   }
 
   useEffect(() => {

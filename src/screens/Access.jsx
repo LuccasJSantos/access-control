@@ -1,4 +1,4 @@
-import { Input, Skeleton, Text, Toast } from 'native-base'
+import { Input, Skeleton, Text } from 'native-base'
 import { SafeAreaView, View, FlatList, RefreshControl } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 
@@ -12,6 +12,7 @@ import { useAccess } from '../contexts/Access'
 import Cond, { CondItem } from '../components/Cond'
 
 import formatter from '../utils/formatter'
+import { errorHandler } from '../utils/native'
 
 function Home () {
   const { connected } = useConnection()
@@ -25,7 +26,7 @@ function Home () {
   function loadData () {
     setRefreshing(true)
     Promise.all([
-      accessInit().catch(error => Toast.show({ description: error.message, duration: 3000 }))
+      accessInit().catch(errorHandler)
     ]).finally(() => setRefreshing(false))
   }
 
