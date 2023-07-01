@@ -13,7 +13,11 @@ parserOptions:
   sourceType: module
 plugins:
   - react
+  - immutable
 rules: 
+  arrow-parens:
+    - warn
+    - as-needed
   quotes:
     - warn
     - single
@@ -30,6 +34,12 @@ rules:
     - warn
   no-unused-vars:
     - warn
+  immutable/no-let:
+    - error
+  immutable/no-this:
+    - error
+  immutable/no-mutation:
+    - error
   react/react-in-jsx-scope: 'off'
   react/prop-types: 'off'
   import/order:
