@@ -54,7 +54,7 @@ function ConnectionSettings () {
     const [first, ...steps] = guide.steps.map(u.assoc('state', 'unfinished'))
     const firstStep = u.assoc('state', 'current')(first)
 
-    setGuide((current) => ({
+    setGuide(current => ({
       ...current,
       currentStep: 0,
       steps: [firstStep, ...steps]

@@ -16,8 +16,6 @@ export default ({ successFn, errorFn }) => {
   }, [networks])
 
   useEffect(() => {
-    let timeout = null
-
     const fn = async () => {
       const granted = await requestMultiple([
         'android.permission.ACCESS_FINE_LOCATION',
@@ -38,7 +36,7 @@ export default ({ successFn, errorFn }) => {
             })
           }
 
-          timeout = setTimeout(fn, 2000)
+          setTimeout(fn, 2000)
         }
       )
 
@@ -51,7 +49,6 @@ export default ({ successFn, errorFn }) => {
 
     return () => {
       Toast.closeAll()
-      clearTimeout(timeout)
     }
   }, [])
 
@@ -66,7 +63,7 @@ export default ({ successFn, errorFn }) => {
       .then(u.map(addEnabledProp))
       .then(u.sort(sortByLevel))
       .then(setNetworks)
-      .catch((error) => errorFn({ error, message: 'Error while loading WiFi list' }))
+      .catch(error => errorFn({ error, message: 'Error while loading WiFi list' }))
   }
 
   function onWiFiSelected (index) {

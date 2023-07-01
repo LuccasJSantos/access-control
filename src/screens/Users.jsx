@@ -156,7 +156,7 @@ function Home () {
                 <Input
                   placeholder="Buscar"
                   ref={searchInput}
-                  onChangeText={e => (searchInput.current.value = e)}
+                  onChangeText={e => (searchInput.current.value = e)} // eslint-disable-line
                   onEndEditing={onSearch}
                   InputRightElement={<View className="mr-3"><Feather name="search" color="#E4E4E4" /></View>} />
               </View>

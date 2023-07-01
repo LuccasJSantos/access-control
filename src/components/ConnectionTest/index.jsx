@@ -18,7 +18,7 @@ const ConnectionTest = ({ data, onCompleted, onError, onBack }) => {
   ]) // state :: unfinished | current | finished | error
 
   const setStepByIndex = (index, value) => {
-    setSteps((current) => [
+    setSteps(current => [
       ...current.slice(0, index),
       { ...current[index], ...value },
       ...current.slice(index + 1)
@@ -32,7 +32,7 @@ const ConnectionTest = ({ data, onCompleted, onError, onBack }) => {
       return setTimeout(onCompleted, 1000)
     }
 
-    setCurrentStep((current) => current + 1)
+    setCurrentStep(current => current + 1)
   }
 
   function onStepError (error) {

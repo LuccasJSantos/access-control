@@ -53,7 +53,7 @@ function Login () {
 
     connectionInit()
       // Promise.resolve(true)
-      .then((connected) => {
+      .then(connected => {
         if (!connected) {
           navigation.reset({
             index: 0,

@@ -60,7 +60,7 @@ export const LoginProvider = ({ children }) => {
 
   const login = async () => {
     return storage.read(APP_SESSION_FILENAME)
-      .then((data) => {
+      .then(data => {
         const interval = Interval.fromDateTimes(new Date(), new Date(data.expireAt))
 
         if (!interval.isValid) {
@@ -84,7 +84,7 @@ export const LoginProvider = ({ children }) => {
 
         return { valid: true, message: 'Usuário autenticado!' }
       })
-      .catch((error) => {
+      .catch(error => {
         if (error.message.includes('ENOENT')) {
           throw new Error('Realize a configuração de login inicial')
         }

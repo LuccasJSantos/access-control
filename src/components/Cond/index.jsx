@@ -5,7 +5,7 @@ const Cond = ({ watch, children, className }) => {
 
   return (
     <View className={className}>
-      {children.find((c) => c.props.when === watch)}
+      {children.find(c => c.props.when === watch)}
     </View>
   )
 }

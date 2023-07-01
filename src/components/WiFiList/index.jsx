@@ -1,4 +1,4 @@
-import { Button, Center, Input, Modal, Spinner } from 'native-base'
+import { Button, Input, Spinner } from 'native-base'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import { useRef } from 'react'
@@ -52,7 +52,7 @@ const WiFiList = ({ className, onError, onConnect }) => {
 
         <Input
           ref={refWifiPass}
-          onChangeText={(e) => (refWifiPass.current.value = e)}
+          onChangeText={e => (refWifiPass.current.value = e)} // eslint-disable-line
           variant="underlined"
           placeholder="Insira a senha"
           type="password"

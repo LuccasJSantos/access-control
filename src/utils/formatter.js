@@ -1,5 +1,5 @@
 export default {
-  role: (text) => ({
+  role: text => ({
     admin: 'Administrador',
     student: 'Estudante',
     professor: 'Professor',
@@ -10,7 +10,7 @@ export default {
     it: 'Técnico de informática',
     unidentified: 'Sem cadastro'
   })[text],
-  action: (id) => ({
+  action: id => ({
     0: 'Acesso negado',
     1: 'Acesso permitido',
     10: 'Usuário deletado',
@@ -18,7 +18,7 @@ export default {
     12: 'Moderador registrado',
     13: 'Admin registrado'
   })[id],
-  actionIcon: (id) => ({
+  actionIcon: id => ({
     0: 'x',
     1: 'check',
     10: 'trash',
@@ -32,7 +32,7 @@ export default {
     2: 'Moderador',
     3: 'Admin'
   }),
-  greet: (date) => {
+  greet: date => {
     const hour = date.getHours()
 
     if (hour < 4) return 'Boa noite'

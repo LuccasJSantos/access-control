@@ -51,7 +51,7 @@ export const UsersProvider = ({ children }) => {
 
         return storage.write(APP_USERS_FILENAME, usersData)
       })
-      .catch((error) => {
+      .catch(error => {
         console.error(error)
       })
   }
@@ -78,7 +78,7 @@ export const UsersProvider = ({ children }) => {
       })
   }
 
-  const deleteUser = async (rfid) => {
+  const deleteUser = async rfid => {
     return axios.get(`http://${ip}/user_del?rfid=${rfid}`, {
       headers: {
         'X-RFID': userId,
@@ -123,7 +123,7 @@ export const UsersProvider = ({ children }) => {
           recurse()
         })
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error.message)
         throw new Error('Erro registrar usuário')
       })

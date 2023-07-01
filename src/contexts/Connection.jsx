@@ -25,8 +25,8 @@ export const ConnectionProvider = ({ children }) => {
   const connectionCheck = async () => {
     // return Promise.resolve({ status: 200 })
     return axios.get(`http://${ip}/dooraccess`)
-      .then((res) => (res.status === 200))
-      .then((conn) => {
+      .then(res => (res.status === 200))
+      .then(conn => {
         if (!conn) {
           reset()
           return false
@@ -93,7 +93,7 @@ export const ConnectionProvider = ({ children }) => {
             return new Promise((resolve, reject) => {
               const ip = `${net}.${host + 1}`
               return axios.get(`http://${ip}/dooraccess`)
-                .then((res) => {
+                .then(res => {
                   if (res.status === 200 && res.data === 'NodeMCU Door Access API') {
                     console.log('ip found', ip)
                     return resolve(ip)
