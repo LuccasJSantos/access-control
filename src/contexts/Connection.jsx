@@ -117,7 +117,7 @@ export const ConnectionProvider = ({ children }) => {
   }
 
   const connect = async ({ ssid, password }) => {
-    return WifiManager.connectToProtectedSSID(APP_NODEMCU_SSID, APP_NODEMCU_PASS, false)
+    return WifiManager.connectToProtectedSSID(APP_NODEMCU_SSID, APP_NODEMCU_PASS, false, false)
       .then(() =>
         axios.get(`http://${APP_NODEMCU_HOST}/ssid?ssid=${ssid}&pass=${password}`))
       .then(res => {
