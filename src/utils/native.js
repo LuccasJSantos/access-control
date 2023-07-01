@@ -12,6 +12,6 @@ export const errorHandler = error => {
   Toast.show({
     duration: 2000,
     description: error.message,
-    backgroundColor: '#4CAF50'
+    backgroundColor: '#E50014'
   })
 }
